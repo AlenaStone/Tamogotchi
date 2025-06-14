@@ -1,21 +1,20 @@
-package at.fhj.msd;
+package at.fhj.msd.model;
 
-public class Fish extends Animal {
+public class Cat extends Animal {
 
     // Конструктор, который принимает имя
-    public Fish(String name) {
+    public Cat(String name) {
         super(name); // Передаёт имя в Animal
     }
 
     // Реализация makeSound()
     @Override
     public void makeSound() {
-        System.out.println("Blub-Blub");
+        System.out.println("Miau-Miau");
     }
 
     @Override
     public String getEmoji() {
-        return "🐟";
+        return "🐱";
     }
-
 }

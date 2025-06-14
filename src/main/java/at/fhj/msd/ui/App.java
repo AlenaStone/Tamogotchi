@@ -1,4 +1,6 @@
-package at.fhj.msd;
+package at.fhj.msd.ui;
+
+import at.fhj.msd.Game;
 
 /**
  * Hello world!

@@ -1,6 +1,8 @@
-package at.fhj.msd;
+package at.fhj.msd.model;
 
 import java.util.Random;
+
+import at.fhj.msd.trick.Trick;
 
 abstract class Animal {
 

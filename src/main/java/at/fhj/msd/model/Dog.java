@@ -1,4 +1,4 @@
-package at.fhj.msd;
+package at.fhj.msd.model;
 
 public class Dog extends Animal {
 

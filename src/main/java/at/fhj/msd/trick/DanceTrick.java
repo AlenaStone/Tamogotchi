@@ -1,4 +1,4 @@
-package at.fhj.msd;
+package at.fhj.msd.trick;
 
 public class DanceTrick implements Trick {
 

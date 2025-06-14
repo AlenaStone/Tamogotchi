@@ -2,6 +2,16 @@ package at.fhj.msd;
 
 import java.util.Scanner;
 
+import at.fhj.msd.model.Animal;
+import at.fhj.msd.model.Bird;
+import at.fhj.msd.model.Cat;
+import at.fhj.msd.model.Dog;
+import at.fhj.msd.model.Fish;
+import at.fhj.msd.trick.DanceTrick;
+import at.fhj.msd.trick.JumpTrick;
+import at.fhj.msd.trick.RollOverTrick;
+import at.fhj.msd.trick.Trick;
+
 public class Game {
 
     private Animal animal;
