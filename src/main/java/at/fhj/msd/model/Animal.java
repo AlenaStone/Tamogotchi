@@ -4,7 +4,7 @@ import java.util.Random;
 
 import at.fhj.msd.trick.Trick;
 
-abstract class Animal {
+public abstract class Animal {
 
     private String name;
     private int hungerLevel = 0;

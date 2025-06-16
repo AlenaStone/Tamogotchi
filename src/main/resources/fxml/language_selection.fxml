@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.fhj.msd.ui.controller.LanguageController"
+            style="-fx-background-color: transparent;">
+
+    <!-- Background image -->
+    <ImageView fx:id="background"
+               fitWidth="400" fitHeight="400"
+               preserveRatio="true"
+               layoutX="0" layoutY="0"
+               onMousePressed="#handleMousePressed"
+               onMouseDragged="#handleMouseDragged"/>
+
+    <!-- English button -->
+    <ImageView fx:id="btnEnglish"
+               layoutX="125" layoutY="278"
+               fitWidth="42" fitHeight="45"
+               pickOnBounds="true"
+               onMouseClicked="#onEnglishClick"
+               onMouseEntered="#onHoverImage"
+               onMouseExited="#onExitImage"/>
+
+    <!-- Russian button -->
+    <ImageView fx:id="btnRussian"
+               layoutX="237" layoutY="278"
+               fitWidth="42" fitHeight="45"
+               pickOnBounds="true"
+               onMouseClicked="#onRussianClick"
+               onMouseEntered="#onHoverImage"
+               onMouseExited="#onExitImage"/>
+
+    <!-- Close button -->
+    <Label fx:id="closeLabel"
+           text="✖"
+           layoutX="315" layoutY="38"
+           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-font-weight: bold;"
+           onMouseClicked="#handleClose"
+           onMouseEntered="#onHoverClose"
+           onMouseExited="#onExitClose"/>
+</AnchorPane>
