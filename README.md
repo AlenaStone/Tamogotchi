@@ -27,14 +27,6 @@ In this game you can:
 
 ---
 
-## How to Run
-
-1. Compile all `.java` files.
-2. Run the `Game` class.
-3. Follow the console instructions.
-
----
-
 ## Controls
 
 - Enter your pet’s name.
