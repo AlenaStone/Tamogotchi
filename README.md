@@ -1,4 +1,4 @@
-# Tamagotchi Game — Virtual Pet
+# Tamagotchi Game
 
 Welcome to the Tamagotchi game!  
 This is a console-based Java game where you take care of a virtual pet, managing its mood, hunger, and energy levels.
