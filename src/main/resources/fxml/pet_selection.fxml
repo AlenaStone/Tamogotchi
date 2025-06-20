@@ -1,38 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="at.fhj.msd.ui.controller.PetSelectionController"
-      alignment="CENTER" spacing="20" prefWidth="400" prefHeight="300">
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.fhj.msd.ui.controller.PetSelectionController"
+            style="-fx-background-color: transparent;">
 
-    <Label text="%label.choosePet" style="-fx-font-size: 18px;"/>
-    
-    <HBox alignment="CENTER" spacing="30">
-        <VBox alignment="CENTER" spacing="5">
-            <Button text="%button.cat" onAction="#handleCatSelection" style="-fx-font-size: 16px;"/>
-            <ImageView fx:id="catImage" fitWidth="100" fitHeight="100" preserveRatio="true"/>
-        </VBox>
-        
-        <VBox alignment="CENTER" spacing="5">
-            <Button text="%button.dog" onAction="#handleDogSelection" style="-fx-font-size: 16px;"/>
-            <ImageView fx:id="dogImage" fitWidth="100" fitHeight="100" preserveRatio="true"/>
-        </VBox>
-        
-        <VBox alignment="CENTER" spacing="5">
-            <Button text="%button.bird" onAction="#handleBirdSelection" style="-fx-font-size: 16px;"/>
-            <ImageView fx:id="birdImage" fitWidth="100" fitHeight="100" preserveRatio="true"/>
-        </VBox>
-        
-        <VBox alignment="CENTER" spacing="5">
-            <Button text="%button.fish" onAction="#handleFishSelection" style="-fx-font-size: 16px;"/>
-            <ImageView fx:id="fishImage" fitWidth="100" fitHeight="100" preserveRatio="true"/>
-        </VBox>
-    </HBox>
+    <!-- Background -->
+    <ImageView fx:id="background"
+               fitWidth="400" fitHeight="400"
+               preserveRatio="true"
+               layoutX="0" layoutY="0"/>
 
-</VBox>
+    <!-- Title -->
+    <Label fx:id="labelSelectPet"
+           layoutX="120" layoutY="160"
+           style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 10px;" />
+
+    <!-- Pet selection buttons -->
+    <ImageView fx:id="btnCat"
+               layoutX="150" layoutY="201"
+               fitWidth="81" fitHeight="81"
+               pickOnBounds="true"
+               onMouseClicked="#handleCatSelection"
+               onMouseExited="#onExitImage"/>
+
+    <ImageView fx:id="btnDog"
+               layoutX="150" layoutY="201"
+               fitWidth="81" fitHeight="81"
+               pickOnBounds="true"
+               onMouseClicked="#handleDogSelection"
+               onMouseExited="#onExitImage"/>
+
+    <ImageView fx:id="btnBird"
+               layoutX="150" layoutY="201"
+               fitWidth="81" fitHeight="81"
+               pickOnBounds="true"
+               onMouseClicked="#handleBirdSelection"
+               onMouseExited="#onExitImage"/>
+
+    <ImageView fx:id="btnFish"
+               layoutX="150" layoutY="201"
+               fitWidth="81" fitHeight="81"
+               pickOnBounds="true"
+               onMouseClicked="#handleFishSelection"
+               onMouseExited="#onExitImage"/>
+
+    <!-- Navigation buttons -->
+    <ImageView fx:id="btnOK"
+               layoutX="166" layoutY="305"
+               fitWidth="54" fitHeight="47"
+               pickOnBounds="true"
+               onMouseClicked="#handleOKSelection"
+               onMouseEntered="#onHoverImage"
+               onMouseExited="#onExitImage"/>
+
+    <ImageView fx:id="btnLeft"
+               layoutX="120" layoutY="305"
+               fitWidth="38" fitHeight="44"
+               pickOnBounds="true"
+               onMouseClicked="#handleLeft"
+               onMouseEntered="#onHoverImage"
+               onMouseExited="#onExitImage"/>
+
+    <ImageView fx:id="btnRight"
+               layoutX="229" layoutY="305"
+               fitWidth="38" fitHeight="44"
+               pickOnBounds="true"
+               onMouseClicked="#handleRight"
+               onMouseEntered="#onHoverImage"
+               onMouseExited="#onExitImage"/>
+
+    <!-- Labels -->
+    <Label fx:id="backLabel"
+           text="◀ "
+           layoutX="43" layoutY="100"
+           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 2px; -fx-background-radius: 5px; -fx-cursor: hand;"
+           onMouseClicked="#handleBack"
+           onMouseEntered="#onHoverBackLabel"
+           onMouseExited="#onBackMove"/>
+
+    <Label fx:id="closeLabel"
+           text="✖"
+           layoutX="307" layoutY="65"
+           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;"
+           onMouseClicked="#handleClose"
+           onMouseEntered="#onHoverClose"
+           onMouseExited="#onExitClose"/>
+
+</AnchorPane>

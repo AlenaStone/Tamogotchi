@@ -1,19 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="at.fhj.msd.ui.controller.NameController"
-      alignment="CENTER" spacing="20" prefWidth="400" prefHeight="300">
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.fhj.msd.ui.controller.NameController"
+            prefWidth="400" prefHeight="400"
+            style="-fx-background-color: transparent;">
 
-    <Label text="%label.enterName" style="-fx-font-size: 18px;"/>
-    <TextField fx:id="nameInput" promptText="%label.namePrompt" style="-fx-font-size: 16px;"/>
-    <Button text="%button.submit" onAction="#handleNameSubmission" style="-fx-font-size: 16px;"/>
-    <Label fx:id="errorLabel" style="-fx-text-fill: red; -fx-font-size: 14px;"/>
-    <Button text="%button.back" onAction="#handleBack" style="-fx-font-size: 16px;"/>
+    <ImageView fx:id="background"
+               fitWidth="400" fitHeight="400"
+               layoutX="0" layoutY="0"
+               preserveRatio="true" />
 
-</VBox>
+    <Label fx:id="labelSelectName"
+           layoutX="150" layoutY="190"
+           text="%label.chooseName"
+           style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold;" />
+           
+<TextField fx:id="nameField"
+           layoutX="150" layoutY="220"
+           prefWidth="90" 
+           promptText="%placeholder.petName"
+           style="-fx-background-color: transparent; -fx-text-fill: blue; -fx-border-color: white; -fx-font-size: 16px; -fx-font-weight: bold;" />
+
+    <ImageView fx:id="btnOK"
+                layoutX="166" layoutY="305"
+               fitWidth="55" fitHeight="48"
+               pickOnBounds="true"
+               onMouseClicked="#handleNameConfirm"
+               onMouseEntered="#onHoverImage"
+               onMouseExited="#onExitImage"/>
+
+ <Label fx:id="backLabel"
+           text="◀ "
+           layoutX="43" layoutY="100"
+           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 2px; -fx-background-radius: 5px; -fx-cursor: hand;"
+           onMouseClicked="#handleBackSelection"
+           onMouseEntered="#onHoverBackLabel"
+           onMouseExited="#onBackMove"/>
+
+    <Label fx:id="closeLabel"
+           text="✖"
+           layoutX="307" layoutY="65"
+           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;"
+           onMouseClicked="#handleClose"
+           onMouseEntered="#onHoverClose"
+           onMouseExited="#onExitClose"/>
+</AnchorPane>

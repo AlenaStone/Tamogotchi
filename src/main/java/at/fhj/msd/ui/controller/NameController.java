@@ -1,66 +1,145 @@
 package at.fhj.msd.ui.controller;
 
-import java.io.IOException;
+import java.net.URL;
 import java.util.ResourceBundle;
 
 import at.fhj.msd.model.GameState;
-import javafx.event.ActionEvent;
+import at.fhj.msd.util.WindowDragHelper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class NameController {
+public class NameController implements Initializable {
 
     @FXML
-    private TextField nameInput;
-
+    private ImageView background;
     @FXML
-    private Label errorLabel;
-
+    private ImageView btnOK;
     @FXML
-    private void handleNameSubmission(ActionEvent event) {
-        String name = nameInput.getText().trim();
-        if (name.isEmpty()) {
-            errorLabel.setText("Name cannot be empty!");
-        } else {
-            GameState.setPetName(name);
-            loadNextScene(event);
+    private ImageView btnBack;
+    @FXML
+    private ImageView btnClose;
+    @FXML
+    private TextField nameField;
+    @FXML
+    private Label labelSelectName;
+    @FXML
+    private Label closeLabel;
+    @FXML
+    private Label backLabel;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            WindowDragHelper.makeDraggable(background);
+            background.setImage(new Image(getClass()
+                    .getResource("/images/ui/tamagotchi_name_selection.png")
+                    .toExternalForm()));
+            btnOK.setImage(new Image(getClass().getResource("/images/ui/button_OK_name.png").toExternalForm()));
+
+            labelSelectName.setText(resources.getString("label.enterName"));
+            nameField.setPromptText(resources.getString("placeholder.petName"));
+        } catch (Exception e) {
+            System.err.println("❌ Ошибка инициализации NameController: " + e.getMessage());
         }
     }
 
     @FXML
-    private void handleBack(ActionEvent event) {
-        loadPreviousScene(event);
-    }
+    private void handleNameConfirm() {
+        String name = nameField.getText().trim();
+        if (name.isEmpty())
+            return;
 
-    private void loadNextScene(ActionEvent event) {
+        GameState.setPetName(name);
+
         try {
-            ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", GameState.getLocale());
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/game_scene.fxml"), bundle);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/game_scene.fxml"));
+            loader.setResources(GameState.getBundle());
             Parent root = loader.load();
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
+
+            Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+
+            Stage stage = (Stage) nameField.getScene().getWindow();
+            stage.setScene(scene);
             stage.show();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void loadPreviousScene(ActionEvent event) {
+    @FXML
+    private void onExitImage(MouseEvent event) {
+        ImageView button = (ImageView) event.getSource();
+        button.setOpacity(1.0);
+        button.setScaleX(1.0);
+        button.setScaleY(1.0);
+    }
+
+    @FXML
+    private void onHoverImage(MouseEvent event) {
+        ImageView button = (ImageView) event.getSource();
+        button.setOpacity(0.7);
+        button.setScaleX(1.05);
+        button.setScaleY(1.05);
+    }
+
+    @FXML
+    private void handleClose() {
+        Stage stage = (Stage) background.getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    private void handleBackSelection() {
         try {
-            ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", GameState.getLocale());
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pet_selection.fxml"), bundle);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pet_selection.fxml"));
+            loader.setResources(GameState.getBundle());
             Parent root = loader.load();
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
+
+            Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+
+            Stage stage = (Stage) background.getScene().getWindow();
+            stage.setScene(scene);
             stage.show();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void onHoverBackLabel() {
+        backLabel.setStyle(
+                "-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
+    }
+
+    @FXML
+    private void onHoverClose() {
+        closeLabel.setStyle(
+                "-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
+    }
+
+    @FXML
+    private void onBackMove() {
+        if (backLabel != null) {
+            backLabel.setStyle(
+                    "-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
+        }
+    }
+
+    @FXML
+    private void onExitClose() {
+        closeLabel.setStyle(
+                "-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }
 }
-

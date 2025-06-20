@@ -13,9 +13,7 @@
     <ImageView fx:id="background"
                fitWidth="400" fitHeight="400"
                preserveRatio="true"
-               layoutX="0" layoutY="0"
-               onMousePressed="#handleMousePressed"
-               onMouseDragged="#handleMouseDragged"/>
+               layoutX="0" layoutY="0"/>
 
     <!-- English button -->
     <ImageView fx:id="btnEnglish"
@@ -39,7 +37,7 @@
     <Label fx:id="closeLabel"
            text="✖"
            layoutX="315" layoutY="38"
-           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-font-weight: bold;"
+           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;"
            onMouseClicked="#handleClose"
            onMouseEntered="#onHoverClose"
            onMouseExited="#onExitClose"/>

@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import at.fhj.msd.model.GameState;
+import at.fhj.msd.util.WindowDragHelper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,35 +31,20 @@ public class LanguageController {
     @FXML
     private Label closeLabel;
 
-    private double xOffset = 0;
-    private double yOffset = 0;
 
     public void initialize() {
         try {
+            WindowDragHelper.makeDraggable(background);
             background.setImage(new Image(getClass().getResource("/images/ui/tamagotchi_frame_final.png").toExternalForm()));
             btnEnglish.setImage(new Image(getClass().getResource("/images/ui/button_en.png").toExternalForm()));
             btnRussian.setImage(new Image(getClass().getResource("/images/ui/button_ru.png").toExternalForm()));
-
-            background.setOnMousePressed(this::handleMousePressed);
-            background.setOnMouseDragged(this::handleMouseDragged);
         } catch (Exception e) {
             System.err.println("❌ Failed to load UI images: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    @FXML
-    private void handleMousePressed(MouseEvent event) {
-        xOffset = event.getSceneX();
-        yOffset = event.getSceneY();
-    }
 
-    @FXML
-    private void handleMouseDragged(MouseEvent event) {
-        Stage stage = (Stage) background.getScene().getWindow();
-        stage.setX(event.getScreenX() - xOffset);
-        stage.setY(event.getScreenY() - yOffset);
-    }
 
     @FXML
     private void onHoverImage(MouseEvent event) {
@@ -141,4 +127,4 @@ public class LanguageController {
 }
 
 
-// mvn clean javafx:run
+// mvn clean javafx:run 
