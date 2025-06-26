@@ -1,17 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="at.fhj.msd.ui.controller.GameController"
-      alignment="CENTER" spacing="20" prefWidth="400" prefHeight="300">
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.fhj.msd.ui.controller.GameController"
+            prefWidth="400" prefHeight="400"
+            onMouseClicked="#handleMouseClick"
+            style="-fx-background-color: transparent;">
 
-    <Label text="%label.gameTitle" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-    <Label fx:id="petNameLabel" style="-fx-font-size: 18px;"/>
-    <Label fx:id="petTypeLabel" style="-fx-font-size: 18px;"/>
-    <ImageView fx:id="petImageView" fitWidth="128" fitHeight="128" preserveRatio="true"/>
+    <!-- Background -->
+    <ImageView fx:id="background"
+               fitWidth="400" fitHeight="400"
+               layoutX="0" layoutY="0"
+               preserveRatio="true" />
 
-</VBox>
+    <!-- Pet Name -->
+    <Label fx:id="petNameLabel"
+           layoutX="160" layoutY="90"
+           text="Pet Name"
+           style="-fx-font-size: 22px; -fx-text-fill: white; -fx-font-weight: bold;" />
+
+    <!-- Pet Image -->
+    <ImageView fx:id="petImage"
+               layoutX="145" layoutY="150"
+               fitWidth="90" fitHeight="90"
+               preserveRatio="true" />
+
+    <!-- Top stats -->
+    <Label text="🍴" layoutX="120" layoutY="260" style="-fx-font-size: 10px; -fx-text-fill: white;" />
+    <ProgressBar fx:id="hungerBar" layoutX="130" layoutY="262" prefWidth="50" prefHeight="6" />
+
+    <Label text="Zz" layoutX="195" layoutY="258" style="-fx-font-size: 10px; -fx-text-fill: white;" />
+    <ProgressBar fx:id="energyBar" layoutX="210" layoutY="262" prefWidth="50" prefHeight="6" />
+
+    <!-- Bottom stats -->
+    <Label text=":)" layoutX="120" layoutY="243" style="-fx-font-size: 10px; -fx-text-fill: white;" />
+    <ProgressBar fx:id="moodBar" layoutX="130" layoutY="247" prefWidth="50" prefHeight="6" />
+
+    <Label text="❤" layoutX="195" layoutY="243" style="-fx-font-size: 10px; -fx-text-fill: white;" />
+    <ProgressBar fx:id="healthBar" layoutX="210" layoutY="247" prefWidth="50" prefHeight="6" />
+
+    <!-- Action Buttons -->
+    <ImageView fx:id="btnFeed"
+               layoutX="192" layoutY="308"
+               fitWidth="40" fitHeight="40"
+               pickOnBounds="true"
+               onMouseClicked="#handleFeed"
+               onMouseEntered="#onHoverImage"
+               onMouseExited="#onExitImage"/>
+
+    <ImageView fx:id="btnSleep"
+               layoutX="155" layoutY="308"
+               fitWidth="40" fitHeight="40"
+               pickOnBounds="true"
+               onMouseClicked="#handleSleep"
+               onMouseEntered="#onHoverImage"
+               onMouseExited="#onExitImage"/>
+
+    <ImageView fx:id="btnPlay"
+               layoutX="118" layoutY="308"
+               fitWidth="40" fitHeight="40"
+               pickOnBounds="true"
+               onMouseClicked="#handlePlay"
+               onMouseEntered="#onHoverImage"
+               onMouseExited="#onExitImage"/>
+
+    <ImageView fx:id="btnHeal"
+               layoutX="229" layoutY="307"
+               fitWidth="40" fitHeight="40"
+               pickOnBounds="true"
+               onMouseClicked="#handleHeal"
+               onMouseEntered="#onHoverImage"
+               onMouseExited="#onExitImage"/>
+
+    <ImageView fx:id="btnTomato"
+               layoutX="77" layoutY="260"
+               fitWidth="20" fitHeight="26"
+               pickOnBounds="true"
+               onMouseClicked="#handleTomato"
+               onMouseEntered="#onHoverImage"
+               onMouseExited="#onExitImage"/>
+
+    <!-- Back Button -->
+    <Label fx:id="backLabel"
+           text="◀ "
+           layoutX="43" layoutY="100"
+           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); "
+                 + "-fx-font-weight: bold; -fx-padding: 2px; -fx-background-radius: 5px; -fx-cursor: hand;"
+           onMouseClicked="#handleBackSelection"
+           onMouseEntered="#onHoverBackLabel"
+           onMouseExited="#onBackMove"/>
+
+    <!-- Close Button -->
+    <Label fx:id="closeLabel"
+           text="✖"
+           layoutX="307" layoutY="65"
+           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); "
+                 + "-fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;"
+           onMouseClicked="#handleClose"
+           onMouseEntered="#onHoverClose"
+           onMouseExited="#onExitClose"/>
+
+</AnchorPane>

@@ -22,29 +22,29 @@
 
     <!-- Pet selection buttons -->
     <ImageView fx:id="btnCat"
-               layoutX="150" layoutY="201"
-               fitWidth="81" fitHeight="81"
+               layoutX="145" layoutY="191"
+               fitWidth="91" fitHeight="91"
                pickOnBounds="true"
                onMouseClicked="#handleCatSelection"
                onMouseExited="#onExitImage"/>
 
     <ImageView fx:id="btnDog"
-               layoutX="150" layoutY="201"
-               fitWidth="81" fitHeight="81"
+               layoutX="145" layoutY="191"
+               fitWidth="91" fitHeight="91"
                pickOnBounds="true"
                onMouseClicked="#handleDogSelection"
                onMouseExited="#onExitImage"/>
 
     <ImageView fx:id="btnBird"
-               layoutX="150" layoutY="201"
-               fitWidth="81" fitHeight="81"
+               layoutX="145" layoutY="191"
+               fitWidth="91" fitHeight="91"
                pickOnBounds="true"
                onMouseClicked="#handleBirdSelection"
                onMouseExited="#onExitImage"/>
 
     <ImageView fx:id="btnFish"
-               layoutX="150" layoutY="201"
-               fitWidth="81" fitHeight="81"
+               layoutX="145" layoutY="191"
+               fitWidth="91" fitHeight="91"
                pickOnBounds="true"
                onMouseClicked="#handleFishSelection"
                onMouseExited="#onExitImage"/>
