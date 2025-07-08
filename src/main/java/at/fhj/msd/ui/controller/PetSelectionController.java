@@ -121,11 +121,17 @@ public class PetSelectionController implements Initializable {
         updatePetVisibility();
     }
 
-    private void updatePetVisibility() {
-        for (int i = 0; i < petButtons.length; i++) {
-            petButtons[i].setVisible(i == currentPetIndex);
+private void updatePetVisibility() {
+    for (int i = 0; i < petButtons.length; i++) {
+        petButtons[i].setVisible(i == currentPetIndex);
+        if (i == currentPetIndex) {
+            petButtons[i].setStyle("-fx-effect: dropshadow(gaussian, white, 15, 0.5, 0, 0);");
+        } else {
+            petButtons[i].setStyle("");  // Снять эффект с остальных
         }
     }
+}
+
 
     @FXML
     private void handleLeft() {

@@ -17,15 +17,18 @@
                preserveRatio="true" />
 
     <Label fx:id="labelSelectName"
-           layoutX="150" layoutY="190"
-           text="%label.chooseName"
-           style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold;" />
+        layoutY="130" layoutX="80"
+       prefWidth="220"
+       alignment="center"
+       style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87, 46, 81, 0.6); -fx-padding: 5px 10px; -fx-background-radius: 10px;" />
+
            
 <TextField fx:id="nameField"
-           layoutX="150" layoutY="220"
-           prefWidth="90" 
+           layoutX="115" layoutY="210"
+           prefWidth="150"
+           alignment="center"
            promptText="%placeholder.petName"
-           style="-fx-background-color: transparent; -fx-text-fill: blue; -fx-border-color: white; -fx-font-size: 16px; -fx-font-weight: bold;" />
+           style="-fx-background-color: rgba(109, 29, 129, 0.8);-fx-text-fill: white; -fx-border-color: white; -fx-border-width: 1px; -fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-font-weight: bold;" />
 
     <ImageView fx:id="btnOK"
                 layoutX="166" layoutY="305"

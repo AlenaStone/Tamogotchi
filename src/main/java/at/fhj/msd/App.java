@@ -22,6 +22,7 @@ public class App extends Application {
         scene.setFill(Color.TRANSPARENT);
 
         stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setAlwaysOnTop(true);
         stage.setScene(scene);
         stage.setWidth(1024);
         stage.setHeight(1024);
