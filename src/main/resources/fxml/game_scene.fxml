@@ -9,7 +9,6 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="at.fhj.msd.ui.controller.GameController"
             prefWidth="400" prefHeight="400"
-            onMouseClicked="#handleMouseClick"
             style="-fx-background-color: transparent;">
 
     <!-- Background -->

@@ -18,6 +18,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+/**
+ * Controller for the death screen scene.
+ * Displays death message, pet image, and handles restart/exit actions.
+ */
 public class DeathController implements Initializable {
 
     @FXML
@@ -35,44 +39,42 @@ public class DeathController implements Initializable {
     @FXML
     private Button exitButton;
 
+    /**
+     * Initializes the death screen with localized messages and pet image.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            // Set background image
-            backgroundImage.setImage(new Image(getClass().getResource("/images/ui/game_scene.png").toExternalForm()));
+        backgroundImage.setImage(new Image(getClass().getResource("/images/ui/game_scene.png").toExternalForm()));
 
-            // Set death message with pet name (localized)
-            String petName = GameState.getPetName();
+        String petName = GameState.getPetName();
+        String petType = GameState.getPetType();
+
+        if (petName != null && resources.containsKey("label.petDied")) {
             String template = resources.getString("label.petDied");
-            String message = template.replace("{0}", petName);
-            deathMessage.setText(message);
+            deathMessage.setText(template.replace("{0}", petName));
+        } else {
+            deathMessage.setText("Your pet has died.");
+        }
 
-            // Add shadow to death message
-            DropShadow dropShadow = new DropShadow();
-            dropShadow.setColor(Color.BLACK);
-            dropShadow.setRadius(5);
-            dropShadow.setOffsetX(2);
-            dropShadow.setOffsetY(2);
-            deathMessage.setEffect(dropShadow);
+        DropShadow dropShadow = new DropShadow();
+        dropShadow.setColor(Color.BLACK);
+        dropShadow.setRadius(5);
+        dropShadow.setOffsetX(2);
+        dropShadow.setOffsetY(2);
+        deathMessage.setEffect(dropShadow);
 
-            // Set death GIF
-            String petType = GameState.getPetType();
-            if (petType != null) {
-                String imagePath = "/images/pets/" + petType + "/" + petType + "_death.gif";
-                URL petImageUrl = getClass().getResource(imagePath);
-                if (petImageUrl != null) {
-                    petDeathImage.setImage(new Image(petImageUrl.toExternalForm()));
-                } else {
-                    System.err.println("❌ Pet death GIF not found: " + imagePath);
-                }
+        if (petType != null) {
+            String imagePath = "/images/pets/" + petType + "/" + petType + "_death.gif";
+            URL petImageUrl = getClass().getResource(imagePath);
+            if (petImageUrl != null) {
+                petDeathImage.setImage(new Image(petImageUrl.toExternalForm()));
             }
-
-        } catch (Exception e) {
-            System.err.println("❌ DeathController initialization error: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
+    /**
+     * Handles the restart button click: returns to pet selection screen.
+     */
     @FXML
     private void handleRestart() {
         try {
@@ -91,18 +93,27 @@ public class DeathController implements Initializable {
         }
     }
 
+    /**
+     * Handles the exit button click: closes the application window.
+     */
     @FXML
     private void handleExit() {
         Stage stage = (Stage) exitButton.getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * Adds hover effect to the buttons.
+     */
     @FXML
     private void onHoverButton(MouseEvent event) {
         Button btn = (Button) event.getSource();
         btn.setStyle("-fx-background-color: #FF1493; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20;");
     }
 
+    /**
+     * Resets button style when mouse exits.
+     */
     @FXML
     private void onExitButton(MouseEvent event) {
         Button btn = (Button) event.getSource();
@@ -113,3 +124,4 @@ public class DeathController implements Initializable {
         }
     }
 }
+// This controller manages the death screen, allowing users to restart or exit the game.

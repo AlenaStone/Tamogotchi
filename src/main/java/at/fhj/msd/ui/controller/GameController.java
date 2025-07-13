@@ -1,9 +1,15 @@
+/**
+ * Controller for the main game scene.
+ * Manages pet state, Pomodoro timer, and user interactions.
+ */
 package at.fhj.msd.ui.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import at.fhj.msd.model.GameState;
+import at.fhj.msd.model.PetSaveData;
+import at.fhj.msd.util.SaveManager;
 import at.fhj.msd.util.WindowDragHelper;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
@@ -66,46 +72,86 @@ public class GameController implements Initializable {
     private Timeline pomodoroTimeline;
     private int remainingSeconds;
     private boolean isPomodoroActive = false;
+    private boolean isAnimationPlaying = false;
+    private boolean isDead = false;
 
+    /**
+     * Initializes the game scene, loading pet state and setting up UI components.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             WindowDragHelper.makeDraggable(background);
             background.setImage(new Image(getClass().getResource("/images/ui/game_scene.png").toExternalForm()));
-
-            String petName = GameState.getPetName();
-            petNameLabel.setText(petName != null ? petName : "Unnamed Pet");
-
-            DropShadow dropShadow = new DropShadow();
-            dropShadow.setColor(Color.BLACK);
-            dropShadow.setRadius(3);
-            dropShadow.setOffsetX(1);
-            dropShadow.setOffsetY(1);
-            petNameLabel.setEffect(dropShadow);
-
+            loadPetState();
             updatePetAnimation("idle");
+            setButtonImages();
+            pomodoroTimerLabel.setText("");
+            pomodoroTimerLabel.setStyle("-fx-background-color: transparent;");
+            startStatsDecrease();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-            btnFeed.setImage(new Image(getClass().getResource("/images/ui/food.png").toExternalForm()));
-            btnSleep.setImage(new Image(getClass().getResource("/images/ui/sleep.png").toExternalForm()));
-            btnPlay.setImage(new Image(getClass().getResource("/images/ui/game.png").toExternalForm()));
-            btnHeal.setImage(new Image(getClass().getResource("/images/ui/health.png").toExternalForm()));
-            btnTomato.setImage(new Image(getClass().getResource("/images/ui/watch.png").toExternalForm()));
-
+    /**
+     * Loads saved pet state from JSON when initializing the game scene.
+     */
+    private void loadPetState() {
+        PetSaveData data = SaveManager.load();
+        if (data != null) {
+            GameState.setPetName(data.petName);
+            GameState.setPetType(data.petType);
+            petNameLabel.setText(data.petName);
+            hungerBar.setProgress(data.hunger);
+            energyBar.setProgress(data.energy);
+            moodBar.setProgress(data.mood);
+            healthBar.setProgress(data.health);
+        } else {
             hungerBar.setProgress(1.0);
             energyBar.setProgress(1.0);
             moodBar.setProgress(1.0);
             healthBar.setProgress(1.0);
-
-            // Initialize Pomodoro label as invisible with transparent background
-            pomodoroTimerLabel.setText("");
-            pomodoroTimerLabel.setStyle("-fx-background-color: transparent;");
-
-            startStatsDecrease();
-
-        } catch (Exception e) {
-            System.err.println("❌ GameController initialization failed: " + e.getMessage());
-            e.printStackTrace();
+            petNameLabel.setText(GameState.getPetName() != null ? GameState.getPetName() : "Unnamed Pet");
         }
+        applyLabelEffect();
+    }
+
+    /**
+     * Saves current pet state to a file.
+     */
+    private void savePetState() {
+        PetSaveData data = new PetSaveData();
+        data.petName = GameState.getPetName();
+        data.petType = GameState.getPetType();
+        data.hunger = hungerBar.getProgress();
+        data.energy = energyBar.getProgress();
+        data.mood = moodBar.getProgress();
+        data.health = healthBar.getProgress();
+        SaveManager.save(data);
+    }
+
+    /**
+     * Applies a drop shadow effect to the pet name label.
+     */
+    private void applyLabelEffect() {
+        DropShadow dropShadow = new DropShadow();
+        dropShadow.setColor(Color.BLACK);
+        dropShadow.setRadius(3);
+        dropShadow.setOffsetX(1);
+        dropShadow.setOffsetY(1);
+        petNameLabel.setEffect(dropShadow);
+    }
+
+    /**
+     * Sets images for all pet interaction buttons.
+     */
+    private void setButtonImages() {
+        btnFeed.setImage(new Image(getClass().getResource("/images/ui/food.png").toExternalForm()));
+        btnSleep.setImage(new Image(getClass().getResource("/images/ui/sleep.png").toExternalForm()));
+        btnPlay.setImage(new Image(getClass().getResource("/images/ui/game.png").toExternalForm()));
+        btnHeal.setImage(new Image(getClass().getResource("/images/ui/health.png").toExternalForm()));
+        btnTomato.setImage(new Image(getClass().getResource("/images/ui/watch.png").toExternalForm()));
     }
 
     private void updatePetAnimation(String state) {
@@ -115,32 +161,33 @@ public class GameController implements Initializable {
             URL petImageUrl = getClass().getResource(imagePath);
             if (petImageUrl != null) {
                 petImage.setImage(new Image(petImageUrl.toExternalForm()));
-            } else {
-                System.err.println("❌ Image for state '" + state + "' not found: " + imagePath);
             }
         }
     }
 
     private void playTemporaryAnimation(String actionState) {
+        if (isAnimationPlaying || isDead)
+            return;
+        isAnimationPlaying = true;
         updatePetAnimation(actionState);
         PauseTransition pause = new PauseTransition(Duration.seconds(5));
-
-        pause.setOnFinished(event -> updatePetAnimation("idle"));
-
+        pause.setOnFinished(event -> {
+            if (!isPomodoroActive && !isDead) {
+                updatePetAnimation("idle");
+            }
+            isAnimationPlaying = false;
+        });
         pause.play();
     }
 
     private void startStatsDecrease() {
-        statsDecreaseTimeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> {
-            decreaseStats();
-        }));
+        statsDecreaseTimeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> decreaseStats()));
         statsDecreaseTimeline.setCycleCount(Timeline.INDEFINITE);
         statsDecreaseTimeline.play();
     }
 
     private void decreaseStats() {
         changeStats(-0.02, -0.02, -0.01, -0.005);
-        System.out.println("Hunger: " + hungerBar.getProgress() + ", Energy: " + energyBar.getProgress());
         checkIfDead();
     }
 
@@ -152,36 +199,39 @@ public class GameController implements Initializable {
     }
 
     private void handleDeath() {
+        if (isDead) return;
+        isDead = true;
+        isAnimationPlaying = true;
         statsDecreaseTimeline.stop();
-
-        // Show death animation
         updatePetAnimation("death");
+        disableButtons();
+        SaveManager.delete();
+        PauseTransition pause = new PauseTransition(Duration.seconds(15));
+        pause.setOnFinished(event -> loadDeathScene());
+        pause.play();
+    }
 
-        // Disable all buttons during death animation
+    private void disableButtons() {
         btnFeed.setDisable(true);
         btnSleep.setDisable(true);
         btnPlay.setDisable(true);
         btnHeal.setDisable(true);
         btnTomato.setDisable(true);
+    }
 
-        PauseTransition pause = new PauseTransition(Duration.seconds(15));
-        pause.setOnFinished(event -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/death_scene.fxml"));
-                loader.setResources(GameState.getBundle());
-                Parent root = loader.load();
-
-                Scene scene = new Scene(root);
-                scene.setFill(Color.TRANSPARENT);
-
-                Stage stage = (Stage) background.getScene().getWindow();
-                stage.setScene(scene);
-                stage.show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        pause.play();
+    private void loadDeathScene() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/death_scene.fxml"));
+            loader.setResources(GameState.getBundle());
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            Stage stage = (Stage) background.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void changeStats(double hungerDelta, double energyDelta, double moodDelta, double healthDelta) {
@@ -192,107 +242,79 @@ public class GameController implements Initializable {
     }
 
     private void updateProgressBar(ProgressBar bar, double value) {
-        double clampedValue = Math.max(0, Math.min(1.0, value)); // Clamp between 0 and 1
+        double clampedValue = Math.max(0, Math.min(1.0, value));
         Platform.runLater(() -> {
             bar.setProgress(clampedValue);
             bar.setStyle(clampedValue > 0.3 ? "-fx-accent: green;" : "-fx-accent: red;");
         });
     }
 
-    @FXML
-    private void handleFeed() {
+    // Pet interaction methods
+    @FXML private void handleFeed() {
         if (!isPomodoroActive) {
             changeStats(+0.2, -0.02, -0.01, 0);
             playTemporaryAnimation("eat");
-            System.out.println("🍴 Feeding pet");
         }
     }
 
-    @FXML
-    private void handleSleep() {
+    @FXML private void handleSleep() {
         if (!isPomodoroActive) {
             changeStats(-0.03, +0.2, -0.01, 0);
             playTemporaryAnimation("sleep");
-            System.out.println("😴 Pet sleeping");
         }
     }
 
-    @FXML
-    private void handlePlay() {
+    @FXML private void handlePlay() {
         if (!isPomodoroActive) {
             changeStats(-0.04, -0.03, +0.2, 0);
             playTemporaryAnimation("play");
-            System.out.println("😊 Pet playing");
         }
     }
 
-    @FXML
-    private void handleHeal() {
+    @FXML private void handleHeal() {
         if (!isPomodoroActive) {
             changeStats(-0.05, -0.03, -0.02, +0.1);
             playTemporaryAnimation("heal");
-            System.out.println("💊 Healing pet");
         }
     }
 
-    @FXML
-    private void handleTomato() {
-        if (isPomodoroActive) {
-            // Pomodoro is already running
-            System.out.println(GameState.getBundle().getString("message.pomodoroAlreadyRunning"));
-            return;
-        }
-
-        System.out.println(GameState.getBundle().getString("message.pomodoroStarted"));
-
+    @FXML private void handleTomato() {
+        if (isPomodoroActive) return;
         isPomodoroActive = true;
-        remainingSeconds = 25 * 60; // 25 minutes
-
-        // Make Pomodoro timer label visible with background and initial time
-        Platform.runLater(() -> {
-            pomodoroTimerLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold; "
-                    + "-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10; -fx-padding: 5px; "
-                    + "-fx-effect: dropshadow(one-pass-box, black, 3, 0.5, 0, 0);");
-            pomodoroTimerLabel.setText(formatTime(remainingSeconds));
-        });
-
-        // Stop stats decrease during Pomodoro
+        remainingSeconds = 25 * 60;
+        updatePomodoroLabelStyle();
+        pomodoroTimerLabel.setText(formatTime(remainingSeconds));
         statsDecreaseTimeline.stop();
-
-        pomodoroTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            remainingSeconds--;
-            Platform.runLater(() -> pomodoroTimerLabel.setText(formatTime(remainingSeconds)));
-
-            if (remainingSeconds <= 0) {
-                pomodoroTimeline.stop();
-                isPomodoroActive = false;
-
-                // Resume stats decrease
-                statsDecreaseTimeline.play();
-
-                // Show Pomodoro finished message
-                Platform.runLater(() -> pomodoroTimerLabel.setText(GameState.getBundle().getString("message.pomodoroFinished")));
-                System.out.println(GameState.getBundle().getString("message.pomodoroFinishedLog"));
-
-                // Hide timer label after 3 seconds
-                PauseTransition hideTimer = new PauseTransition(Duration.seconds(3));
-                hideTimer.setOnFinished(event -> hidePomodoroLabel());
-                hideTimer.play();
-            }
-        }));
-
+        pomodoroTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updatePomodoro()));
         pomodoroTimeline.setCycleCount(Timeline.INDEFINITE);
         pomodoroTimeline.play();
     }
 
-    // Format time as MM:SS
+    private void updatePomodoro() {
+        remainingSeconds--;
+        pomodoroTimerLabel.setText(formatTime(remainingSeconds));
+        if (remainingSeconds <= 0) {
+            pomodoroTimeline.stop();
+            isPomodoroActive = false;
+            statsDecreaseTimeline.play();
+            pomodoroTimerLabel.setText(GameState.getBundle().getString("message.pomodoroFinished"));
+            PauseTransition hideTimer = new PauseTransition(Duration.seconds(3));
+            hideTimer.setOnFinished(event -> hidePomodoroLabel());
+            hideTimer.play();
+        }
+    }
+
+    private void updatePomodoroLabelStyle() {
+        Platform.runLater(() -> pomodoroTimerLabel.setStyle(
+                "-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10; -fx-padding: 5px; -fx-effect: dropshadow(one-pass-box, black, 3, 0.5, 0, 0);"));
+    }
+
     private String formatTime(int totalSeconds) {
         int minutes = totalSeconds / 60;
         int seconds = totalSeconds % 60;
         return String.format("%02d:%02d", minutes, seconds);
     }
 
-    // Hide Pomodoro label and remove background
     private void hidePomodoroLabel() {
         Platform.runLater(() -> {
             pomodoroTimerLabel.setText("");
@@ -300,23 +322,16 @@ public class GameController implements Initializable {
         });
     }
 
-    @FXML
-    private void handleMouseClick(MouseEvent event) {
-        double x = event.getX();
-        double y = event.getY();
-        System.out.println("👉 Clicked at: X=" + x + ", Y=" + y);
-    }
-
-    @FXML
-    private void handleBackSelection() {
+    @FXML private void handleBackSelection() {
+        SaveManager.delete();
+        GameState.setPetName(null);
+        GameState.setPetType(null);
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/name_input.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/language_selection.fxml"));
             loader.setResources(GameState.getBundle());
             Parent root = loader.load();
-
             Scene scene = new Scene(root);
             scene.setFill(Color.TRANSPARENT);
-
             Stage stage = (Stage) background.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -325,49 +340,40 @@ public class GameController implements Initializable {
         }
     }
 
-    @FXML
-    private void handleClose() {
+    @FXML private void handleClose() {
+        savePetState();
         Stage stage = (Stage) background.getScene().getWindow();
         stage.close();
     }
 
-    @FXML
-    private void onHoverImage(MouseEvent event) {
+    // UI hover effects
+    @FXML private void onHoverImage(MouseEvent event) {
         ImageView btn = (ImageView) event.getSource();
         btn.setOpacity(0.7);
         btn.setScaleX(1.05);
         btn.setScaleY(1.05);
     }
 
-    @FXML
-    private void onExitImage(MouseEvent event) {
+    @FXML private void onExitImage(MouseEvent event) {
         ImageView btn = (ImageView) event.getSource();
         btn.setOpacity(1.0);
         btn.setScaleX(1.0);
         btn.setScaleY(1.0);
     }
 
-    @FXML
-    private void onHoverBackLabel() {
-        backLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; "
-                + "-fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
+    @FXML private void onHoverBackLabel() {
+        backLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }
 
-    @FXML
-    private void onBackMove() {
-        backLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); "
-                + "-fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
+    @FXML private void onBackMove() {
+        backLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }
 
-    @FXML
-    private void onHoverClose() {
-        closeLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; "
-                + "-fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
+    @FXML private void onHoverClose() {
+        closeLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }
 
-    @FXML
-    private void onExitClose() {
-        closeLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); "
-                + "-fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
+    @FXML private void onExitClose() {
+        closeLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }
 }

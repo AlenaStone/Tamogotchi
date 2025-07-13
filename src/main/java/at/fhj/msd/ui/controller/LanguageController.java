@@ -3,6 +3,7 @@ package at.fhj.msd.ui.controller;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import at.fhj.msd.util.SaveManager;
 
 import at.fhj.msd.model.GameState;
 import at.fhj.msd.util.WindowDragHelper;
@@ -90,7 +91,11 @@ public class LanguageController {
 
     private void switchLanguage(String lang) {
         try {
+          
+
             GameState.setLocale(new Locale(lang));
+              SaveManager.saveLanguage(lang);
+              
             ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", new Locale(lang));
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pet_selection.fxml"), bundle);
