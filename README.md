@@ -1,71 +1,62 @@
-# Tamagotchi Game
+<h1 align="center">🐾 Tamagotchi JavaFX Game</h1>
 
-Welcome to the Tamagotchi game!  
-This is a console-based Java game where you take care of a virtual pet, managing its mood, hunger, and energy levels.
+<p align="center">
+  Virtual pet desktop game with JavaFX GUI, animations, multilingual support, save system, and a Pomodoro mini-window.<br>
+  Fully written in Java as part of my personal and study projects.
+</p>
 
----
-
-## Project Description
-
-In this game you can:
-
-- Create a pet by entering its name and choosing its type: Dog, Cat, Bird, or Fish.
-- Feed, play with, and put your pet to sleep.
-- Listen to the sounds your pet makes.
-- View your pet’s status with cute emoji indicators.
-- Monitor how mood, hunger, and energy change over time.
+<p align="center">
+  <img src="src/main/resources/images/gamescr.png" width="600" alt="Game Screenshot 1"/>
+</p>
 
 ---
 
-## Key Features
+<h2 align="center">📖 About the Project</h2>
 
-- Object-oriented design: an abstract `Animal` class and concrete subclasses `Dog`, `Cat`, `Bird`, and `Fish`.
-- Polymorphism implemented — different pets make different sounds.
-- Natural degradation of mood, energy, and increase of hunger over time.
-- Input validation for pet names (no digits or invalid names allowed).
-- Text-based menu interface for easy interaction.
-
----
-
-## Controls
-
-- Enter your pet’s name.
-- Choose the type of pet.
-- Use the menu to select actions like feeding, playing, sleeping, etc.
-- Select the exit option to end the game.
+<p align="center">
+  This is a <strong>JavaFX-based Tamagotchi game</strong> developed as a personal and study project.<br>
+  No console interface — <strong>fully GUI-controlled</strong> with draggable windows and styled buttons.
+</p>
 
 ---
 
-## Requirements
+<h2 align="center">🎮 Main Features</h2>
 
-- Java 8 or higher.
-- Console access for input/output.
-
----
-
-## Project Structure
-
-- `Animal.java` — Abstract base class with core properties and methods.
-- `Dog.java`, `Cat.java`, `Bird.java`, `Fish.java` — Subclasses with specific sounds and emoji.
-- `Game.java` — Main game logic and user interface.
+<p align="center">
+  🐾 Pet Selection: Dog, Cat, Bird, Fish (with name validation)<br>
+  🌐 Language Menu: EN / RU<br>
+  💖 Pet Status Management: mood, hunger, energy (live updates)<br>
+  💾 Save System: pet state saved between sessions<br>
+  ⏰ Pomodoro Window: mini focus window with timer<br>
+  🎨 Custom Styling: draggable window, styled UI elements
+</p>
 
 ---
 
-## Possible Improvements
+<h2 align="center">🛠️ Tech Stack</h2>
 
-- Add saving/loading pet state between sessions.
-- Develop a graphical user interface.
-- Add more pet types and interactive actions.
-- Implement more complex mood and health mechanics.
-
----
-
-## Contact
-
-Alena Vodopianova
-
-Feel free to reach out with questions or suggestions!  
+<p align="center">
+  Java 17 • JavaFX • Maven • FXML • CSS Styling • Custom Icons, Sounds, and Images
+</p>
 
 ---
 
-Thanks for playing and good luck caring for your pet! 🐾
+<h2 align="center">🚀 How to Run</h2>
+
+<p align="center">
+  Java 17+ and JavaFX SDK required<br><br>
+</p>
+
+```bash
+mvn clean javafx:run
+```
+
+<h2 align="center">📸 Screenshots</h2> <p align="center"> <img src="src/main/resources/images/petselectionscr.png" width="300" alt="Pet Selection Screen"/> 
+  <img src="src/main/resources/images/maingamescr.png" width="300" alt="Main Game Screen"/> 
+  <img src="src/main/resources/images/pomidoro.png" width="300" alt="Pomodoro Mini-Window"/> </p>
+  
+<h2 align="center">👩‍💻 About Me</h2> <p align="center"> <strong>Alena Vodopianova</strong><br> Mobile Software Development student @ FH Joanneum Graz 🇦🇹<br><br> <a href="mailto:alonsoy75@gmail.com">📫 Email</a> • <a href="https://www.linkedin.com/in/alena-vodopianova-723b32b0/">🔗 LinkedIn</a> </p>
+<p align="center"> Created with ☕, JavaFX, and pure pet-loving energy 💻🐾 </p> 
+
+
+
