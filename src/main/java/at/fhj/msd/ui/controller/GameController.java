@@ -32,41 +32,21 @@ import javafx.util.Duration;
 
 public class GameController implements Initializable {
 
-    @FXML
-    private ImageView background;
-
-    @FXML
-    private Label petNameLabel;
-
-    @FXML
-    private ImageView petImage;
-
-    @FXML
-    private ProgressBar hungerBar;
-    @FXML
-    private ProgressBar energyBar;
-    @FXML
-    private ProgressBar moodBar;
-    @FXML
-    private ProgressBar healthBar;
-
-    @FXML
-    private Label closeLabel;
-    @FXML
-    private Label backLabel;
-
-    @FXML
-    private ImageView btnFeed;
-    @FXML
-    private ImageView btnSleep;
-    @FXML
-    private ImageView btnPlay;
-    @FXML
-    private ImageView btnHeal;
-    @FXML
-    private ImageView btnTomato;
-    @FXML
-    private Label pomodoroTimerLabel;
+    @FXML private ImageView background;
+    @FXML private Label petNameLabel;
+    @FXML private ImageView petImage;
+    @FXML private ProgressBar hungerBar;
+    @FXML private ProgressBar energyBar;
+    @FXML private ProgressBar moodBar;
+    @FXML private ProgressBar healthBar;
+    @FXML private Label closeLabel;
+    @FXML private Label backLabel;
+    @FXML private ImageView btnFeed;
+    @FXML private ImageView btnSleep;
+    @FXML private ImageView btnPlay;
+    @FXML private ImageView btnHeal;
+    @FXML private ImageView btnTomato;
+    @FXML private Label pomodoroTimerLabel;
 
     private Timeline statsDecreaseTimeline;
     private Timeline pomodoroTimeline;
@@ -76,7 +56,8 @@ public class GameController implements Initializable {
     private boolean isDead = false;
 
     /**
-     * Initializes the game scene, loading pet state and setting up UI components.
+     * Initializes the game scene with pet data and UI components.
+     * Called automatically by JavaFX after FXML loading.
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -95,7 +76,7 @@ public class GameController implements Initializable {
     }
 
     /**
-     * Loads saved pet state from JSON when initializing the game scene.
+     * Loads saved pet state from JSON or sets default values if no save exists.
      */
     private void loadPetState() {
         PetSaveData data = SaveManager.load();
@@ -118,7 +99,7 @@ public class GameController implements Initializable {
     }
 
     /**
-     * Saves current pet state to a file.
+     * Saves the current pet state to JSON.
      */
     private void savePetState() {
         PetSaveData data = new PetSaveData();
@@ -144,7 +125,7 @@ public class GameController implements Initializable {
     }
 
     /**
-     * Sets images for all pet interaction buttons.
+     * Sets images for all interactive buttons.
      */
     private void setButtonImages() {
         btnFeed.setImage(new Image(getClass().getResource("/images/ui/food.png").toExternalForm()));
@@ -154,6 +135,9 @@ public class GameController implements Initializable {
         btnTomato.setImage(new Image(getClass().getResource("/images/ui/watch.png").toExternalForm()));
     }
 
+    /**
+     * Updates pet animation based on current state.
+     */
     private void updatePetAnimation(String state) {
         String petType = GameState.getPetType();
         if (petType != null) {
@@ -165,39 +149,51 @@ public class GameController implements Initializable {
         }
     }
 
+    /**
+     * Plays temporary animation like eat, sleep, play, etc.
+     * Resets to idle after 5 seconds.
+     */
     private void playTemporaryAnimation(String actionState) {
-        if (isAnimationPlaying || isDead)
-            return;
+        if (isAnimationPlaying || isDead) return;
         isAnimationPlaying = true;
         updatePetAnimation(actionState);
         PauseTransition pause = new PauseTransition(Duration.seconds(5));
         pause.setOnFinished(event -> {
-            if (!isPomodoroActive && !isDead) {
-                updatePetAnimation("idle");
-            }
+            if (!isPomodoroActive && !isDead) updatePetAnimation("idle");
             isAnimationPlaying = false;
         });
         pause.play();
     }
 
+    /**
+     * Starts decreasing stats over time.
+     */
     private void startStatsDecrease() {
         statsDecreaseTimeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> decreaseStats()));
         statsDecreaseTimeline.setCycleCount(Timeline.INDEFINITE);
         statsDecreaseTimeline.play();
     }
 
+    /**
+     * Decreases pet stats and checks for death condition.
+     */
     private void decreaseStats() {
         changeStats(-0.02, -0.02, -0.01, -0.005);
         checkIfDead();
     }
 
+    /**
+     * Checks if any stat reached zero and triggers death.
+     */
     private void checkIfDead() {
-        if (hungerBar.getProgress() <= 0 || energyBar.getProgress() <= 0 ||
-                moodBar.getProgress() <= 0 || healthBar.getProgress() <= 0) {
+        if (hungerBar.getProgress() <= 0 || energyBar.getProgress() <= 0 || moodBar.getProgress() <= 0 || healthBar.getProgress() <= 0) {
             handleDeath();
         }
     }
 
+    /**
+     * Handles death logic: plays animation, disables buttons, shows death screen.
+     */
     private void handleDeath() {
         if (isDead) return;
         isDead = true;
@@ -211,6 +207,9 @@ public class GameController implements Initializable {
         pause.play();
     }
 
+    /**
+     * Disables all interaction buttons.
+     */
     private void disableButtons() {
         btnFeed.setDisable(true);
         btnSleep.setDisable(true);
@@ -219,6 +218,9 @@ public class GameController implements Initializable {
         btnTomato.setDisable(true);
     }
 
+    /**
+     * Loads death scene UI.
+     */
     private void loadDeathScene() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/death_scene.fxml"));
@@ -234,6 +236,9 @@ public class GameController implements Initializable {
         }
     }
 
+    /**
+     * Updates stats by given values.
+     */
     private void changeStats(double hungerDelta, double energyDelta, double moodDelta, double healthDelta) {
         updateProgressBar(hungerBar, hungerBar.getProgress() + hungerDelta);
         updateProgressBar(energyBar, energyBar.getProgress() + energyDelta);
@@ -241,6 +246,9 @@ public class GameController implements Initializable {
         updateProgressBar(healthBar, healthBar.getProgress() + healthDelta);
     }
 
+    /**
+     * Updates progress bar and applies color.
+     */
     private void updateProgressBar(ProgressBar bar, double value) {
         double clampedValue = Math.max(0, Math.min(1.0, value));
         Platform.runLater(() -> {
@@ -249,35 +257,14 @@ public class GameController implements Initializable {
         });
     }
 
-    // Pet interaction methods
-    @FXML private void handleFeed() {
-        if (!isPomodoroActive) {
-            changeStats(+0.2, -0.02, -0.01, 0);
-            playTemporaryAnimation("eat");
-        }
-    }
+    @FXML private void handleFeed() { if (!isPomodoroActive) { changeStats(+0.2, -0.02, -0.01, 0); playTemporaryAnimation("eat"); } }
+    @FXML private void handleSleep() { if (!isPomodoroActive) { changeStats(-0.03, +0.2, -0.01, 0); playTemporaryAnimation("sleep"); } }
+    @FXML private void handlePlay() { if (!isPomodoroActive) { changeStats(-0.04, -0.03, +0.2, 0); playTemporaryAnimation("play"); } }
+    @FXML private void handleHeal() { if (!isPomodoroActive) { changeStats(-0.05, -0.03, -0.02, +0.1); playTemporaryAnimation("heal"); } }
 
-    @FXML private void handleSleep() {
-        if (!isPomodoroActive) {
-            changeStats(-0.03, +0.2, -0.01, 0);
-            playTemporaryAnimation("sleep");
-        }
-    }
-
-    @FXML private void handlePlay() {
-        if (!isPomodoroActive) {
-            changeStats(-0.04, -0.03, +0.2, 0);
-            playTemporaryAnimation("play");
-        }
-    }
-
-    @FXML private void handleHeal() {
-        if (!isPomodoroActive) {
-            changeStats(-0.05, -0.03, -0.02, +0.1);
-            playTemporaryAnimation("heal");
-        }
-    }
-
+    /**
+     * Starts Pomodoro timer.
+     */
     @FXML private void handleTomato() {
         if (isPomodoroActive) return;
         isPomodoroActive = true;
@@ -290,6 +277,9 @@ public class GameController implements Initializable {
         pomodoroTimeline.play();
     }
 
+    /**
+     * Updates Pomodoro timer.
+     */
     private void updatePomodoro() {
         remainingSeconds--;
         pomodoroTimerLabel.setText(formatTime(remainingSeconds));
@@ -304,17 +294,25 @@ public class GameController implements Initializable {
         }
     }
 
+    /**
+     * Applies style for Pomodoro label.
+     */
     private void updatePomodoroLabelStyle() {
-        Platform.runLater(() -> pomodoroTimerLabel.setStyle(
-                "-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10; -fx-padding: 5px; -fx-effect: dropshadow(one-pass-box, black, 3, 0.5, 0, 0);"));
+        Platform.runLater(() -> pomodoroTimerLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10; -fx-padding: 5px; -fx-effect: dropshadow(one-pass-box, black, 3, 0.5, 0, 0);"));
     }
 
+    /**
+     * Formats seconds as MM:SS string.
+     */
     private String formatTime(int totalSeconds) {
         int minutes = totalSeconds / 60;
         int seconds = totalSeconds % 60;
         return String.format("%02d:%02d", minutes, seconds);
     }
 
+    /**
+     * Hides Pomodoro label.
+     */
     private void hidePomodoroLabel() {
         Platform.runLater(() -> {
             pomodoroTimerLabel.setText("");
@@ -322,6 +320,9 @@ public class GameController implements Initializable {
         });
     }
 
+    /**
+     * Handles going back to language selection screen.
+     */
     @FXML private void handleBackSelection() {
         SaveManager.delete();
         GameState.setPetName(null);
@@ -340,13 +341,18 @@ public class GameController implements Initializable {
         }
     }
 
+    /**
+     * Saves pet state and closes window.
+     */
     @FXML private void handleClose() {
         savePetState();
         Stage stage = (Stage) background.getScene().getWindow();
         stage.close();
     }
 
-    // UI hover effects
+    /**
+     * Hover effect for interactive buttons.
+     */
     @FXML private void onHoverImage(MouseEvent event) {
         ImageView btn = (ImageView) event.getSource();
         btn.setOpacity(0.7);
@@ -354,6 +360,9 @@ public class GameController implements Initializable {
         btn.setScaleY(1.05);
     }
 
+    /**
+     * Removes hover effect.
+     */
     @FXML private void onExitImage(MouseEvent event) {
         ImageView btn = (ImageView) event.getSource();
         btn.setOpacity(1.0);
@@ -361,18 +370,30 @@ public class GameController implements Initializable {
         btn.setScaleY(1.0);
     }
 
+    /**
+     * Hover effect for back button.
+     */
     @FXML private void onHoverBackLabel() {
         backLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }
 
+    /**
+     * Mouse exit effect for back button.
+     */
     @FXML private void onBackMove() {
         backLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }
 
+    /**
+     * Hover effect for close button.
+     */
     @FXML private void onHoverClose() {
         closeLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }
 
+    /**
+     * Mouse exit effect for close button.
+     */
     @FXML private void onExitClose() {
         closeLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }

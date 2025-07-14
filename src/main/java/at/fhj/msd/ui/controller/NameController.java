@@ -1,3 +1,7 @@
+/**
+ * Controller for the pet name input scene.
+ * Handles name entry, navigation, and UI interactions.
+ */
 package at.fhj.msd.ui.controller;
 
 import java.net.URL;
@@ -20,53 +24,46 @@ import javafx.stage.Stage;
 
 public class NameController implements Initializable {
 
-    @FXML
-    private ImageView background;
-    @FXML
-    private ImageView btnOK;
-    @FXML
-    private ImageView btnBack;
-    @FXML
-    private ImageView btnClose;
-    @FXML
-    private TextField nameField;
-    @FXML
-    private Label labelSelectName;
-    @FXML
-    private Label closeLabel;
-    @FXML
-    private Label backLabel;
+    @FXML private ImageView background;
+    @FXML private ImageView btnOK;
+    @FXML private ImageView btnBack;
+    @FXML private ImageView btnClose;
+    @FXML private TextField nameField;
+    @FXML private Label labelSelectName;
+    @FXML private Label closeLabel;
+    @FXML private Label backLabel;
 
+    /**
+     * Initializes the name input scene with UI setup.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
             WindowDragHelper.makeDraggable(background);
             background.setImage(new Image(getClass().getResource("/images/ui/tamagotchi_name_selection.png").toExternalForm()));
             btnOK.setImage(new Image(getClass().getResource("/images/ui/button_OK_name.png").toExternalForm()));
-
             labelSelectName.setText(resources.getString("label.enterName"));
             nameField.setPromptText(resources.getString("placeholder.petName"));
         } catch (Exception e) {
-            System.err.println("❌ Error initializing NameController: " + e.getMessage());
+            System.err.println("\u274C Error initializing NameController: " + e.getMessage());
         }
     }
 
+    /**
+     * Confirms pet name and transitions to the game scene.
+     */
     @FXML
     private void handleNameConfirm() {
         String name = nameField.getText().trim();
-        if (name.isEmpty())
-            return;
+        if (name.isEmpty()) return;
 
         GameState.setPetName(name);
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/game_scene.fxml"));
             loader.setResources(GameState.getBundle());
             Parent root = loader.load();
-
             Scene scene = new Scene(root);
             scene.setFill(Color.TRANSPARENT);
-
             Stage stage = (Stage) nameField.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -75,16 +72,17 @@ public class NameController implements Initializable {
         }
     }
 
+    /**
+     * Navigates back to the pet selection scene.
+     */
     @FXML
     private void handleBackSelection() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pet_selection.fxml"));
             loader.setResources(GameState.getBundle());
             Parent root = loader.load();
-
             Scene scene = new Scene(root);
             scene.setFill(Color.TRANSPARENT);
-
             Stage stage = (Stage) background.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -93,12 +91,18 @@ public class NameController implements Initializable {
         }
     }
 
+    /**
+     * Closes the application.
+     */
     @FXML
     private void handleClose() {
         Stage stage = (Stage) background.getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * Handles hover effect on image buttons.
+     */
     @FXML
     private void onHoverImage(MouseEvent event) {
         ImageView btn = (ImageView) event.getSource();
@@ -107,6 +111,9 @@ public class NameController implements Initializable {
         btn.setScaleY(1.05);
     }
 
+    /**
+     * Resets hover effect on image buttons.
+     */
     @FXML
     private void onExitImage(MouseEvent event) {
         ImageView btn = (ImageView) event.getSource();
@@ -115,27 +122,35 @@ public class NameController implements Initializable {
         btn.setScaleY(1.0);
     }
 
+    /**
+     * Handles hover effect on back label.
+     */
     @FXML
     private void onHoverBackLabel() {
-        backLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; "
-                + "-fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
+        backLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }
 
+    /**
+     * Resets hover effect on back label.
+     */
     @FXML
     private void onBackMove() {
-        backLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); "
-                + "-fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
+        backLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }
 
+    /**
+     * Handles hover effect on close label.
+     */
     @FXML
     private void onHoverClose() {
-        closeLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; "
-                + "-fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
+        closeLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }
 
+    /**
+     * Resets hover effect on close label.
+     */
     @FXML
     private void onExitClose() {
-        closeLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); "
-                + "-fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
+        closeLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;");
     }
 }
