@@ -141,11 +141,11 @@ public class PetSelectionController implements Initializable {
     /**
      * Handles switching to the next pet.
      */
-   @FXML
-private void handleRight() {
-    currentPetIndex = (currentPetIndex + 1) % petButtons.length;
-    updatePetVisibility();
-}
+    @FXML
+    private void handleRight() {
+        currentPetIndex = (currentPetIndex + 1) % petButtons.length;
+        updatePetVisibility();
+    }
 
     /**
      * Confirms the pet selection and moves to the name input scene.

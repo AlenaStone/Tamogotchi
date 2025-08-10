@@ -4,84 +4,100 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * GameState holds the current state of the game such as pet name, pet type, and selected language.
- * This class provides static methods for managing game-wide settings and localization.
+ * Global game state (singleton-style via static fields).
+ * Holds current pet data and the active i18n bundle.
+ *
+ * You can either:
+ *  - call {@link #setLocale(Locale)} to switch language by locale, or
+ *  - call {@link #setBundle(ResourceBundle)} to inject a specific bundle.
+ *
+ * Controllers should read strings via {@link #getBundle()} or {@link #i18n(String)}.
+ *
+ * @author  Alena Vodopianova
+ * @version 1.0
+ * @since   2025-07-14
  */
+public final class GameState {
 
-public class GameState {
-    /**
-     * The name of the pet.
-     */
+    // ---------------- Pet data ----------------
     private static String petName;
-
-    /**
-     * The type of the pet (e.g., cat, dog).
-     */
     private static String petType;
 
-    /**
-     * The selected locale for the game's language.
-     */
-    private static Locale locale;
+    // ---------------- I18N ----------------
+    /** Current locale (defaults to ENGLISH). */
+    private static Locale locale = Locale.ENGLISH;
 
-     /**
-     * Sets the pet's name.
-     * @param name the name of the pet
-     */
+    /** Active bundle; if null, it will be (re)loaded from {@link #locale}. */
+    private static ResourceBundle bundle = null;
+
+    private GameState() { /* no instances */ }
+
+    // ---------- Pet getters/setters ----------
+    /** Set current pet name. */
     public static void setPetName(String name) {
         petName = name;
     }
 
-     /**
-     * Returns the pet's name.
-     * @return the name of the pet
-     */
+    /** Get current pet name. */
     public static String getPetName() {
         return petName;
     }
 
-    /**
-     * Sets the type of the pet.
-     * @param type the type of the pet
-     */
+    /** Set current pet type (e.g., "cat"). */
     public static void setPetType(String type) {
         petType = type;
     }
 
-
-    /**
-     * Returns the type of the pet.
-     * @return the type of the pet
-     */
+    /** Get current pet type. */
     public static String getPetType() {
         return petType;
     }
 
-      /**
-     * Sets the game's locale for language.
-     * @param loc the locale to set
+    // ---------- I18N: bundle + locale ----------
+    /**
+     * Explicitly set the active ResourceBundle.
+     * Use this from App.start() after you load the bundle once.
      */
-    public static void setLocale(Locale loc) {
-        locale = loc;
+    public static void setBundle(ResourceBundle b) {
+        bundle = b;
     }
 
     /**
-     * Returns the currently set locale.
-     * @return the locale of the game
+     * Get the active ResourceBundle.
+     * If none was explicitly set, it will be loaded from the current {@link #locale}.
      */
+    public static ResourceBundle getBundle() {
+        ensureBundle();
+        return bundle;
+    }
+
+    /**
+     * Convenience helper: translate a key or return the key if missing.
+     */
+    public static String i18n(String key) {
+        ResourceBundle b = getBundle();
+        return (b != null && b.containsKey(key)) ? b.getString(key) : key;
+    }
+
+    /**
+     * Set application locale and (re)load the bundle from it.
+     * Calling this overrides any previously injected bundle.
+     */
+    public static void setLocale(Locale loc) {
+        locale = (loc == null) ? Locale.ENGLISH : loc;
+        // force reload from the new locale
+        bundle = ResourceBundle.getBundle("i18n.messages", locale);
+    }
+
+    /** Get current locale. */
     public static Locale getLocale() {
         return locale;
     }
 
-    /**
-     * Returns the ResourceBundle for the currently set locale.
-     * Defaults to English if no locale is set.
-     * @return the resource bundle for localization
-     */
-    public static ResourceBundle getBundle() {
-        if (locale == null) {
-            locale = Locale.ENGLISH;
+    // ---------- Internals ----------
+    private static void ensureBundle() {
+        if (bundle == null) {
+            bundle = ResourceBundle.getBundle("i18n.messages", (locale == null) ? Locale.ENGLISH : locale);
         }
-        return ResourceBundle.getBundle("i18n.messages", locale);
     }
 }

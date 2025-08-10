@@ -4,26 +4,28 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/21"
+<AnchorPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="at.fhj.msd.ui.controller.GameController"
             prefWidth="400" prefHeight="400"
             style="-fx-background-color: transparent;">
 
-    <!-- Background -->
+    <!-- Background image -->
     <ImageView fx:id="background"
                fitWidth="400" fitHeight="400"
                layoutX="0" layoutY="0"
                preserveRatio="true" />
 
-    <!-- Pet Name -->
+    <!-- Pet name -->
     <Label fx:id="petNameLabel"
-            layoutY="95" layoutX="115"
-       prefWidth="160" prefHeight="40"
-       alignment="center"
-       style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87, 46, 81, 0.6); -fx-padding: 5px 10px; -fx-background-radius: 10px;" />
-    <!-- Pet Image -->
+           layoutX="115" layoutY="95"
+           prefWidth="160" prefHeight="40"
+           alignment="center"
+           style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-padding: 5 10; -fx-background-radius: 10;" />
+
+    <!-- Pet image -->
     <ImageView fx:id="petImage"
                layoutX="150" layoutY="150"
                fitWidth="80" fitHeight="80"
@@ -43,7 +45,7 @@
     <Label text="❤" layoutX="195" layoutY="243" style="-fx-font-size: 10px; -fx-text-fill: white;" />
     <ProgressBar fx:id="healthBar" layoutX="210" layoutY="247" prefWidth="50" prefHeight="10" />
 
-    <!-- Action Buttons -->
+    <!-- Action buttons -->
     <ImageView fx:id="btnFeed"
                layoutX="192" layoutY="308"
                fitWidth="40" fitHeight="40"
@@ -76,37 +78,106 @@
                onMouseEntered="#onHoverImage"
                onMouseExited="#onExitImage"/>
 
+    <!-- Pomodoro icon: toggles menu -->
     <ImageView fx:id="btnTomato"
                layoutX="77" layoutY="260"
                fitWidth="20" fitHeight="26"
                pickOnBounds="true"
-               onMouseClicked="#handleTomato"
+               onMouseClicked="#togglePomodoroPanel"
                onMouseEntered="#onHoverImage"
                onMouseExited="#onExitImage"/>
 
-       <Label fx:id="pomodoroTimerLabel"
-       mouseTransparent="true"
-       layoutX="115" layoutY="240"
-       prefWidth="160" prefHeight="40"
-        alignment="center"
-       style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87, 46, 81, 0.6); -fx-background-radius: 10; -fx-padding: 5px; -fx-effect: dropshadow(one-pass-box, black, 3, 0.5, 0, 0);" />
-
-    <!-- Back Button -->
+    <!-- Back button -->
     <Label fx:id="backLabel"
            text="◀ "
            layoutX="43" layoutY="100"
-           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 2px; -fx-background-radius: 5px; -fx-cursor: hand;"
+           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 2; -fx-background-radius: 5; -fx-cursor: hand;"
            onMouseClicked="#handleBackSelection"
            onMouseEntered="#onHoverBackLabel"
            onMouseExited="#onBackMove"/>
 
-    <!-- Close Button -->
+    <!-- Close button -->
     <Label fx:id="closeLabel"
            text="✖"
            layoutX="307" layoutY="65"
-           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3px; -fx-background-radius: 5px; -fx-cursor: hand;"
+           style="-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3; -fx-background-radius: 5; -fx-cursor: hand;"
            onMouseClicked="#handleClose"
            onMouseEntered="#onHoverClose"
            onMouseExited="#onExitClose"/>
+
+    <!-- =================== POMODORO =================== -->
+
+    <!-- MENU (buttons) — hidden by default; shows when clicking the hourglass -->
+    <VBox fx:id="pomodoroMenuBox" layoutX="140" layoutY="106" spacing="6"
+    style="-fx-background-color: rgba(87,46,81,0.85); -fx-background-radius: 16;"
+          visible="false" managed="false">
+        <children>
+
+            <Label fx:id="pomodoroTimeLabel" text="25:00" alignment="center"
+                   prefWidth="110" prefHeight="30"
+                   style="-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 4; -fx-effect: dropshadow(one-pass-box, black, 3, 0.5, 0, 0);" />
+
+            <Label fx:id="pomodoroStatusLabel" text="%pomodoro.settings.focus" alignment="center"
+                   prefWidth="110" prefHeight="22"
+                   style="-fx-font-size: 13px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 3; -fx-effect: dropshadow(one-pass-box, black, 3, 0.5, 0, 0);" />
+
+            <ProgressBar fx:id="pomodoroProgress" prefWidth="110" prefHeight="10"/>
+
+            <!-- Buttons -->
+            <VBox spacing="6">
+                <children>
+                    <Label fx:id="btnPomodoroStart" text="%pomodoro.menu.start"
+                           style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 4 8; -fx-cursor: hand;"
+                           onMouseClicked="#handlePomodoroStart"
+                           onMouseEntered="#onHoverPomodoroStart"
+                           onMouseExited="#onExitPomodoroStart"/>
+
+                    <Label fx:id="btnPomodoroPause" text="%pomodoro.menu.pause"
+                           style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 4 8; -fx-cursor: hand;"
+                           onMouseClicked="#handlePomodoroPause"
+                           onMouseEntered="#onHoverPomodoroPause"
+                           onMouseExited="#onExitPomodoroPause"/>
+
+                    <Label fx:id="btnPomodoroReset" text="%pomodoro.menu.reset"
+                           style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 4 8; -fx-cursor: hand;"
+                           onMouseClicked="#handlePomodoroReset"
+                           onMouseEntered="#onHoverPomodoroReset"
+                           onMouseExited="#onExitPomodoroReset"/>
+
+                    <Label fx:id="btnPomodoroSettings" text="%pomodoro.menu.settings"
+                           style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 4 8; -fx-cursor: hand;"
+                           onMouseClicked="#handlePomodoroSettings"
+                           onMouseEntered="#onHoverPomodoroSettings"
+                           onMouseExited="#onExitPomodoroSettings"/>
+                </children>
+            </VBox>
+
+            <Label fx:id="pomodoroCycleLabel" text="0/4" alignment="center"
+                   prefWidth="110" prefHeight="22"
+                   style="-fx-font-size: 13px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 3; -fx-effect: dropshadow(one-pass-box, black, 3, 0.5, 0, 0);" />
+        </children>
+    </VBox>
+
+    <!-- HUD (no buttons) — hidden by default; shows while the timer runs -->
+    <VBox fx:id="pomodoroHudBox" layoutX="140" layoutY="230" spacing="6"
+          visible="false" managed="false">
+        <children>
+           
+            <Label fx:id="pomodoroTimeHUDLabel" text="25:00" alignment="center"
+                   prefWidth="110" prefHeight="30"
+                   style="-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 4; -fx-effect: dropshadow(one-pass-box, black, 3, 0.5, 0, 0);" />
+
+            <Label fx:id="pomodoroStatusHUDLabel" text="Focus" alignment="center"
+                   prefWidth="110" prefHeight="22"
+                   style="-fx-font-size: 13px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 3; -fx-effect: dropshadow(one-pass-box, black, 3, 0.5, 0, 0);" />
+
+            <ProgressBar fx:id="pomodoroProgressHUD" prefWidth="110" prefHeight="10" />
+             
+
+            <Label fx:id="pomodoroCycleHUDLabel" text="0/4" alignment="center"
+                   prefWidth="110" prefHeight="22"
+                   style="-fx-font-size: 13px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 3; -fx-effect: dropshadow(one-pass-box, black, 3, 0.5, 0, 0);" />
+        </children>
+    </VBox>
 
 </AnchorPane>

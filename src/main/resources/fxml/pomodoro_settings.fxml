@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.fhj.msd.ui.controller.PomodoroSettingsController"
+            prefWidth="420" prefHeight="360"
+            style="-fx-background-color: rgba(87,46,81,0.85); -fx-background-radius: 16;">
+    <children>
+        <VBox spacing="14" AnchorPane.topAnchor="16" AnchorPane.bottomAnchor="16"
+              AnchorPane.leftAnchor="16" AnchorPane.rightAnchor="16">
+            
+
+            <!-- Content -->
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="160" halignment="RIGHT"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+
+                </columnConstraints>
+                
+
+                <!-- Focus -->
+                <Label text="%pomodoro.settings.focus" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                       style="-fx-text-fill: white;"/>
+                <TextField fx:id="focusMinutesField" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                           promptText="25" text="25"/>
+
+                <!-- Short Break -->
+                <Label text="%pomodoro.settings.short" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                       style="-fx-text-fill: white;"/>
+                <TextField fx:id="shortBreakMinutesField" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                           promptText="5" text="5"/>
+
+                <!-- Long Break -->
+                <Label text="%pomodoro.settings.long" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                       style="-fx-text-fill: white;"/>
+                <TextField fx:id="longBreakMinutesField" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                           promptText="15" text="15"/>
+
+                <!-- Cycles before long break -->
+                <Label text="%pomodoro.settings.cycles" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                       style="-fx-text-fill: white;"/>
+                <TextField fx:id="cyclesBeforeLongField" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                           promptText="4" text="4"/>
+
+                <!-- Preset -->
+                <Label text="%pomodoro.settings.preset" GridPane.rowIndex="4" GridPane.columnIndex="0"
+                       style="-fx-text-fill: white;"/>
+                <ComboBox fx:id="presetCombo" GridPane.rowIndex="4" GridPane.columnIndex="1"
+                          promptText="%pomodoro.preset.classic"/>
+
+                <!-- Auto-start -->
+                <Label text="%pomodoro.settings.autoStart" GridPane.rowIndex="5" GridPane.columnIndex="0"
+                       style="-fx-text-fill: white;"/>
+                <CheckBox fx:id="autoStartCheck" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                <!-- Sound -->
+                <Label text="%pomodoro.settings.sound" GridPane.rowIndex="6" GridPane.columnIndex="0"
+                       style="-fx-text-fill: white;"/>
+                <HBox spacing="8" GridPane.rowIndex="6" GridPane.columnIndex="1">
+                    <children>
+                        <CheckBox fx:id="soundOnCheck" text="%common.on"/>
+                        <Button fx:id="btnSoundPreview" text="%common.preview" onAction="#onSoundPreview"/>
+                    </children>
+                </HBox>
+            </GridPane>
+
+            <Separator/>
+
+            <!-- Actions -->
+            <HBox spacing="10">
+                <children>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnCancel" text="%common.cancel" onAction="#onCancel" cancelButton="true"/>
+                    <Button fx:id="btnSave" text="%common.save" onAction="#onSave" defaultButton="true"/>
+                </children>
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

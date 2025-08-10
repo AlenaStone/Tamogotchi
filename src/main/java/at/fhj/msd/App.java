@@ -5,8 +5,8 @@
  * based on the saved language settings and pet data.
  * 
  * Author: Alena Vodopianova
- * Version: 1.0
- * Since: 2025-07-14
+ * Version: 1.1
+ * Since: 2025-08-11
  */
 
 package at.fhj.msd;
@@ -25,70 +25,59 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+/**
+ * Main application entry point.
+ *
+ * - Restores language from storage and sets the global ResourceBundle.
+ * - Loads either the game scene (if a pet save exists) or the language selector.
+ * - Configures the stage as a transparent, always-on-top widget.
+ */
 public class App extends Application {
 
-    /**
-     * Entry point for the JavaFX application.
-     * Loads the initial scene based on saved language and pet data.
-     *
-     * @param stage the main application window
-     * @throws Exception if FXML loading fails
-     */
     @Override
     public void start(Stage stage) throws Exception {
-        // Load saved language from file
-        String savedLanguage = SaveManager.loadLanguage();
+        // 1) Restore language (fallback to English)
+        String savedLang = SaveManager.loadLanguage();        // e.g. "ru" / "en" / null
+        Locale locale = (savedLang == null || savedLang.isBlank())
+                ? Locale.ENGLISH
+                : Locale.forLanguageTag(savedLang);
 
-        // If no language is saved, show language selection screen
-        if (savedLanguage == null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/language_selection.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            setupStage(stage, scene);
-            return;
+        // Load bundle and store it globally so controllers can reuse it
+        ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
+        GameState.setBundle(bundle);
+
+        // 2) Decide which scene to show
+        PetSaveData save = SaveManager.load();
+
+        String fxml = (save != null)
+                ? "/fxml/game_scene.fxml"
+                : "/fxml/language_selection.fxml";
+
+        if (save != null) {
+            // Pre-fill GameState so GameController sees the pet immediately
+            GameState.setPetName(save.petName);
+            GameState.setPetType(save.petType);
         }
 
-        // Load localized resource bundle
-        ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", new Locale(savedLanguage));
-
-        // Load saved pet data
-        PetSaveData data = SaveManager.load();
-
-        FXMLLoader loader;
-        if (data != null) {
-            GameState.setPetName(data.petName);
-            GameState.setPetType(data.petType);
-            loader = new FXMLLoader(getClass().getResource("/fxml/game_scene.fxml"), bundle);
-        } else {
-            loader = new FXMLLoader(getClass().getResource("/fxml/language_selection.fxml"), bundle);
-        }
-
+        // 3) Load FXML with the bundle (IMPORTANT for i18n in %keys)
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml), bundle);
         Parent root = loader.load();
-        Scene scene = new Scene(root);
-        setupStage(stage, scene);
-    }
 
-    /**
-     * Configures the stage with the given scene and window settings.
-     *
-     * @param stage the application stage
-     * @param scene the scene to set
-     */
-    private void setupStage(Stage stage, Scene scene) {
+        // 4) Stage setup
+        Scene scene = new Scene(root);
         scene.setFill(Color.TRANSPARENT);
+
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setAlwaysOnTop(true);
         stage.setScene(scene);
-        stage.setWidth(1024);
-        stage.setHeight(1024);
+
+        // Let the FXML define the size; don’t hard-code 1024x1024
+        stage.sizeToScene();
+        stage.centerOnScreen();
+
         stage.show();
     }
 
-    /**
-     * Main method to launch the application.
-     *
-     * @param args command-line arguments
-     */
     public static void main(String[] args) {
         launch(args);
     }

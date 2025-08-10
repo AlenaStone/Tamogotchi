@@ -19,6 +19,12 @@
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
         </dependency>
@@ -45,13 +51,22 @@
                     <include>**/*.properties</include>
                     <include>**/*.ico</include>
                     <include>**/*.css</include>
+                    <include>**/*.wav</include>
                    
                 </includes>
             </resource>
         </resources>
 
         <plugins>
-            <!-- Компиляция -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>${main.class}</mainClass>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -86,26 +101,26 @@
             </plugin>
 
             <!-- JPackage -->
-           <plugin>
-    <groupId>org.panteleyev</groupId>
-    <artifactId>jpackage-maven-plugin</artifactId>
-    <version>1.6.0</version>
-    <configuration>
-        <name>Tamogotchi</name>
-        <appVersion>1.0</appVersion>
-        <mainClass>at.fhj.msd.App</mainClass>
-        <input>${project.build.directory}</input>
-        <mainJar>${project.build.finalName}.jar</mainJar>
-        <runtimeImage>C:/javafx-runtime</runtimeImage>
-        <winMenu>true</winMenu>
-        <winShortcut>true</winShortcut>
-        <winDirChooser>true</winDirChooser>
-        <winConsole>false</winConsole>
-        <destination>${project.build.directory}/jpackage</destination>
-        <icon>src/main/resources/images/icon.ico</icon>
+            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <name>Tamogotchi</name>
+                    <appVersion>1.0</appVersion>
+                    <mainClass>at.fhj.msd.App</mainClass>
+                    <input>${project.build.directory}</input>
+                    <mainJar>${project.build.finalName}.jar</mainJar>
+                    <runtimeImage>C:/javafx-runtime</runtimeImage>
+                    <winMenu>true</winMenu>
+                    <winShortcut>true</winShortcut>
+                    <winDirChooser>true</winDirChooser>
+                    <winConsole>false</winConsole>
+                    <destination>${project.build.directory}/jpackage</destination>
+                    <icon>src/main/resources/images/icon.ico</icon>
 
-    </configuration>
-</plugin>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
