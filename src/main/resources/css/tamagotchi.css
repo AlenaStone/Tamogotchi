@@ -1,15 +1,24 @@
+/* ===============================
+   BASE BUTTONS & CLOSE LABELS
+   =============================== */
+
+/* General-purpose red button */
 .button {
-    -fx-background-color: #d64f4f;
-    -fx-text-fill: white;
-    -fx-background-radius: 10;
-    -fx-padding: 8 16 8 16;
+    -fx-background-color: #d64f4f;             /* default red color */
+    -fx-text-fill: white;                      /* white text */
+    -fx-background-radius: 10;                 /* rounded corners */
+    -fx-padding: 8 16 8 16;                    /* vertical/horizontal padding */
     -fx-font-weight: bold;
-    -fx-cursor: hand;
+    -fx-cursor: hand;                          /* pointer cursor */
 }
 
+/* Hover effect: slightly brighter red + subtle lift */
 .button:hover {
-    -fx-background-color: #e76c6c;
+    -fx-background-color: #e05a5a;             /* brighter shade */
+    -fx-translate-y: -1;                       /* tiny lift for feedback */
 }
+
+/* “X” close button (used on modals) */
 .close-button {
     -fx-background-color: transparent;
     -fx-text-fill: white;
@@ -19,7 +28,170 @@
     -fx-effect: dropshadow(one-pass-box, black, 1, 0.7, 0, 0);
     -fx-border-color: transparent;
 }
+
+/* Red highlight on hover */
 .close-button:hover {
     -fx-text-fill: red;
 }
 
+/* ===============================
+   ROOT CONTAINERS & BACKGROUNDS
+   =============================== */
+
+/* Transparent background for root (e.g., modal StackPane) */
+.root {
+    -fx-background-color: transparent;
+}
+
+/* ===============================
+   HEADERS, TITLES, COUNTERS
+   =============================== */
+
+.ach-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgb(0, 0, 0);
+}
+
+/* Title inside modal windows */
+.modal-title {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* Counter labels for achievements */
+.ach-count {
+    -fx-text-fill: #03508b;
+    -fx-font-weight: bold;
+}
+
+.ach-coins {
+    -fx-text-fill: #ffd166;
+    -fx-font-weight: bold;
+}
+
+/* Header block (acts as a part of modal content) */
+.ach-header {
+    -fx-padding: 10 14;
+    -fx-background-color: rgba(255, 255, 255, 0.03);
+    -fx-background-radius: 14;
+    -fx-alignment: CENTER_LEFT;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0.25, 0, 2);
+}
+
+/* Small pill-shaped badges (for numbers or labels) */
+.badge {
+    -fx-background-color: rgba(255, 255, 255, 0.12);
+    -fx-background-radius: 999;  /* fully round shape */
+    -fx-padding: 2 8 2 8;
+}
+
+/* ===============================
+   MODAL CARD & SHADOW
+   =============================== */
+
+/* Base modal card container */
+.modal-card {
+    -fx-background-color: rgba(24, 24, 28, 0.96);
+    -fx-background-radius: 18;
+    -fx-padding: 14;
+}
+
+/* Soft drop shadow for modals */
+.modal-shadow {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.65), 28, 0.25, 0, 6);
+}
+
+/* Close button (inside modal header) */
+.modal-close {
+    -fx-background-color: rgba(255, 255, 255, 0.12);
+    -fx-background-radius: 8;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 4 8;
+}
+
+/* Hover effect for modal close label */
+.modal-close:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.22);
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.4), 8, 0.3, 0, 0);
+}
+
+/* ===============================
+   ACHIEVEMENT GRID & CARDS
+   =============================== */
+
+/* Grid layout container for achievement cards */
+.ach-grid {
+    -fx-padding: 12;
+    -fx-alignment: top-center;
+}
+
+/* Achievement card (used for each unlocked/locked item) */
+.achievement-card {
+    -fx-background-color: rgba(30, 30, 30, 0.92);   /* dark translucent panel */
+    -fx-background-radius: 12;
+    -fx-padding: 10;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.55), 16, 0.2, 0, 4);
+    -fx-max-width: 500;
+}
+
+/* Title of each achievement */
+.achievement-title {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* Description text under title */
+.achievement-desc {
+    -fx-text-fill: #eaeaea;
+    -fx-font-size: 12px;
+    -fx-line-spacing: 2;
+    -fx-alignment: center;
+}
+
+/* Locked achievements (dimmed) */
+.locked {
+    -fx-opacity: 0.85;
+}
+
+/* ===============================
+   SCROLL PANE CUSTOMIZATION
+   =============================== */
+
+/* Transparent background for scroll area */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+/* Remove white artifacts inside viewport */
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Minimal vertical scrollbar style */
+.scroll-bar:vertical .track {
+    -fx-background-color: rgba(255, 255, 255, 0.06);
+    -fx-background-radius: 8;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255, 255, 255, 0.35);
+    -fx-background-radius: 8;
+}
+
+/* Hover effect for scrollbar thumb */
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.55);
+}
+
+/* Hide increment/decrement buttons for a clean look */
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-opacity: 0;
+    -fx-padding: 0;
+}

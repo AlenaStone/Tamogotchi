@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!--
+  Achievements modal:
+  - Frameless card with drop shadow (styled via CSS classes).
+  - Scrollable content: header is part of the content, not a separate title bar.
+  - The "×" label acts as a close control (calls #onClose in the controller).
+-->
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:id="root"
+           fx:controller="at.fhj.msd.ui.controller.AchievementsController"
+           styleClass="modal-card modal-shadow"
+           prefWidth="360" prefHeight="580">
+
+    <!-- Attach stylesheet from classpath -->
+    <stylesheets>
+        <URL value="@/css/tamagotchi.css"/>
+    </stylesheets>
+
+    <!--
+      ScrollPane:
+      - fitToWidth keeps the inner VBox matching the modal width.
+      - Horizontal bar disabled; vertical bar as needed.
+    -->
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" pannable="false">
+        <content>
+            <!-- Root vertical layout for header + grid -->
+            <VBox spacing="12" fillWidth="true">
+                <!-- Header becomes part of the scrollable content -->
+                <HBox spacing="10" styleClass="ach-header">
+                    <!-- Localized modal title -->
+                    <Label text="%ach.menu.title" styleClass="modal-title"/>
+                    <!-- Unlocked/total counter -->
+                    <Label fx:id="countLabel" styleClass="ach-count badge"/>
+                    <!-- Flexible spacer pushes coins and close to the right -->
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    <!-- Coins badge -->
+                    <Label fx:id="coinsLabel" styleClass="ach-coins badge"/>
+                    <!-- Close control (handled by controller) -->
+                    <Label text="×" styleClass="modal-close" onMouseClicked="#onClose"/>
+                </HBox>
+
+                <!--
+                  Achievements list container:
+                  - Items (cards) are added from the controller into VBox#grid.
+                  - Center-top alignment keeps cards centered while stacking downward.
+                -->
+                <VBox fx:id="grid"
+                      spacing="12"
+                      alignment="TOP_CENTER"
+                      styleClass="ach-grid">
+                    <padding>
+                        <Insets topRightBottomLeft="10"/>
+                    </padding>
+                </VBox>
+            </VBox>
+        </content>
+    </ScrollPane>
+</StackPane>

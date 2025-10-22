@@ -20,15 +20,15 @@
 
     <!-- Pet name -->
     <Label fx:id="petNameLabel"
-           layoutX="115" layoutY="95"
-           prefWidth="160" prefHeight="40"
+           layoutX="135" layoutY="90"
+           prefWidth="110"
            alignment="center"
-           style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-padding: 5 10; -fx-background-radius: 10;" />
+           style="-fx-font-size: 17px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(99, 7, 85, 0.49); -fx-padding: 5 5; -fx-background-radius: 10;" />
 
     <!-- Pet image -->
     <ImageView fx:id="petImage"
-               layoutX="150" layoutY="150"
-               fitWidth="80" fitHeight="80"
+               layoutX="140" layoutY="150"
+               fitWidth="100" fitHeight="90"
                preserveRatio="true" />
 
     <!-- Top stats -->
@@ -108,7 +108,7 @@
     <!-- =================== POMODORO =================== -->
 
     <!-- MENU (buttons) — hidden by default; shows when clicking the hourglass -->
-    <VBox fx:id="pomodoroMenuBox" layoutX="140" layoutY="106" spacing="6"
+    <VBox fx:id="pomodoroMenuBox" layoutX="135" layoutY="90" spacing="6"
     style="-fx-background-color: rgba(87,46,81,0.85); -fx-background-radius: 16;"
           visible="false" managed="false">
         <children>
@@ -144,6 +144,14 @@
                            onMouseEntered="#onHoverPomodoroReset"
                            onMouseExited="#onExitPomodoroReset"/>
 
+                   <Label fx:id="btnAchievements" text="%menu.achievements"
+                          onMouseEntered="#onHoverAchievements"
+                          onMouseExited="#onExitAchievements"
+                          onMouseClicked="#handleOpenAchievements"
+                          style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold;
+                             -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10;
+                             -fx-padding: 4 8; -fx-cursor: hand;" />
+
                     <Label fx:id="btnPomodoroSettings" text="%pomodoro.menu.settings"
                            style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 4 8; -fx-cursor: hand;"
                            onMouseClicked="#handlePomodoroSettings"
@@ -159,7 +167,7 @@
     </VBox>
 
     <!-- HUD (no buttons) — hidden by default; shows while the timer runs -->
-    <VBox fx:id="pomodoroHudBox" layoutX="140" layoutY="230" spacing="6"
+    <VBox fx:id="pomodoroHudBox" layoutX="130" layoutY="225" spacing="6"
           visible="false" managed="false">
         <children>
            

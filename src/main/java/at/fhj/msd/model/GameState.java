@@ -8,14 +8,15 @@ import java.util.ResourceBundle;
  * Holds current pet data and the active i18n bundle.
  *
  * You can either:
- *  - call {@link #setLocale(Locale)} to switch language by locale, or
- *  - call {@link #setBundle(ResourceBundle)} to inject a specific bundle.
+ * - call {@link #setLocale(Locale)} to switch language by locale, or
+ * - call {@link #setBundle(ResourceBundle)} to inject a specific bundle.
  *
- * Controllers should read strings via {@link #getBundle()} or {@link #i18n(String)}.
+ * Controllers should read strings via {@link #getBundle()} or
+ * {@link #i18n(String)}.
  *
- * @author  Alena Vodopianova
- * @version 1.0
- * @since   2025-07-14
+ * @author Alena Vodopianova
+ * @version 2.0
+ * @since 2025-07-14
  */
 public final class GameState {
 
@@ -30,7 +31,8 @@ public final class GameState {
     /** Active bundle; if null, it will be (re)loaded from {@link #locale}. */
     private static ResourceBundle bundle = null;
 
-    private GameState() { /* no instances */ }
+    private GameState() {
+        /* no instances */ }
 
     // ---------- Pet getters/setters ----------
     /** Set current pet name. */
@@ -64,7 +66,8 @@ public final class GameState {
 
     /**
      * Get the active ResourceBundle.
-     * If none was explicitly set, it will be loaded from the current {@link #locale}.
+     * If none was explicitly set, it will be loaded from the current
+     * {@link #locale}.
      */
     public static ResourceBundle getBundle() {
         ensureBundle();
@@ -100,4 +103,12 @@ public final class GameState {
             bundle = ResourceBundle.getBundle("i18n.messages", (locale == null) ? Locale.ENGLISH : locale);
         }
     }
+
+public static void initDefaultsIfEmpty(PetSaveData s) {
+    if (s == null) return;
+    if (s.emotion == null) s.emotion = "idle";
+    if (s.achievements == null) s.achievements = new java.util.HashSet<>();
+}
+
+
 }

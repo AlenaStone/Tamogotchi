@@ -17,10 +17,10 @@
 
     <!-- Title -->
 <Label fx:id="labelSelectPet"
-       layoutY="130" layoutX="80"
+       layoutY="150" layoutX="80"
        prefWidth="220"
        alignment="center"
-       style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87, 46, 81, 0.6); -fx-padding: 5px 10px; -fx-background-radius: 10px;" />
+       style="-fx-font-size: 15px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(22, 15, 82, 0.32); -fx-padding: 5px 10px; -fx-background-radius: 10px;" />
 
     <!-- Pet selection buttons -->
     <ImageView fx:id="btnCat"
