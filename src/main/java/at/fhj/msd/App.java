@@ -5,8 +5,8 @@
  * based on the saved language settings and pet data.
  * 
  * Author: Alena Vodopianova
- * Version: 1.1
- * Since: 2025-08-11
+ * Version: 2.0
+ * Since: 25-11-2025
  */
 
 package at.fhj.msd;
@@ -85,3 +85,4 @@ public class App extends Application {
 
 // To run the application, use the following command:
 // mvn clean javafx:run
+// mvn -U clean package

@@ -41,50 +41,86 @@ import javafx.util.Duration;
 public class GameController implements Initializable {
 
     // ===== UI: main scene =====
-    @FXML private ImageView background;
-    @FXML private Label petNameLabel;
-    @FXML private ImageView petImage;
+    @FXML
+    private ImageView background;
+    @FXML
+    private Label petNameLabel;
+    @FXML
+    private ImageView petImage;
 
-    @FXML private ProgressBar hungerBar;
-    @FXML private ProgressBar energyBar;
-    @FXML private ProgressBar moodBar;
-    @FXML private ProgressBar healthBar;
+    @FXML
+    private ProgressBar hungerBar;
+    @FXML
+    private ProgressBar energyBar;
+    @FXML
+    private ProgressBar moodBar;
+    @FXML
+    private ProgressBar healthBar;
 
-    @FXML private Label closeLabel;
-    @FXML private Label backLabel;
+    @FXML
+    private Label closeLabel;
+    @FXML
+    private Label backLabel;
 
-    @FXML private ImageView btnFeed;
-    @FXML private ImageView btnSleep;
-    @FXML private ImageView btnPlay;
-    @FXML private ImageView btnHeal;
-    @FXML private ImageView btnTomato;
+    @FXML
+    private ImageView btnFeed;
+    @FXML
+    private ImageView btnSleep;
+    @FXML
+    private ImageView btnPlay;
+    @FXML
+    private ImageView btnHeal;
+    @FXML
+    private ImageView btnTomato;
 
     // ===== UI: Pomodoro MENU (matches FXML) =====
-    @FXML private VBox pomodoroMenuBox;
-    @FXML private Label pomodoroTimeLabel;
-    @FXML private Label pomodoroStatusLabel;
-    @FXML private ProgressBar pomodoroProgress;
-    @FXML private Label btnPomodoroStart;
-    @FXML private Label btnPomodoroPause;
-    @FXML private Label btnPomodoroReset;
-    @FXML private Label btnPomodoroSettings;
-    @FXML private Label pomodoroCycleLabel;
+    @FXML
+    private VBox pomodoroMenuBox;
+    @FXML
+    private Label pomodoroTimeLabel;
+    @FXML
+    private Label pomodoroStatusLabel;
+    @FXML
+    private ProgressBar pomodoroProgress;
+    @FXML
+    private Label btnPomodoroStart;
+    @FXML
+    private Label btnPomodoroPause;
+    @FXML
+    private Label btnPomodoroReset;
+    @FXML
+    private Label btnPomodoroSettings;
+    @FXML
+    private Label pomodoroCycleLabel;
 
     // Achievements entry in the menu (hover styles)
-    @FXML private Label btnAchievements;
+    @FXML
+    private Label btnAchievements;
 
-    @FXML public void onHoverAchievements(Event e) { btnAchievements.setStyle(btnStyle(true)); }
-    @FXML public void onExitAchievements(Event e)  { btnAchievements.setStyle(btnStyle(false)); }
+    @FXML
+    public void onHoverAchievements(Event e) {
+        btnAchievements.setStyle(btnStyle(true));
+    }
+
+    @FXML
+    public void onExitAchievements(Event e) {
+        btnAchievements.setStyle(btnStyle(false));
+    }
 
     // ===== UI: Pomodoro HUD (compact overlay) =====
-    @FXML private VBox pomodoroHudBox;
-    @FXML private Label pomodoroTimeHUDLabel;
-    @FXML private Label pomodoroStatusHUDLabel;
-    @FXML private ProgressBar pomodoroProgressHUD;
-    @FXML private Label pomodoroCycleHUDLabel;
+    @FXML
+    private VBox pomodoroHudBox;
+    @FXML
+    private Label pomodoroTimeHUDLabel;
+    @FXML
+    private Label pomodoroStatusHUDLabel;
+    @FXML
+    private ProgressBar pomodoroProgressHUD;
+    @FXML
+    private Label pomodoroCycleHUDLabel;
 
     // ===== Pet runtime state (v1.2) =====
-    private PetSaveData pet;           // persistent state (xp/coins/achievements etc.)
+    private PetSaveData pet; // persistent state (xp/coins/achievements etc.)
     private boolean isAnimationPlaying = false; // prevents emotion override while action anim is running
     private boolean isDead = false;
 
@@ -92,16 +128,18 @@ public class GameController implements Initializable {
     private Timeline statsDecreaseTimeline;
 
     // ===== Pomodoro state =====
-    private enum Mode { FOCUS, SHORT_BREAK, LONG_BREAK }
+    private enum Mode {
+        FOCUS, SHORT_BREAK, LONG_BREAK
+    }
 
     private Mode mode = Mode.FOCUS;
-    private boolean uiMenuOpen = false;       // true while a modal/menu is open
-    private Timeline pomodoroTimeline;        // 1s ticking timer
-    private int remainingSeconds = 0;         // in current interval
+    private boolean uiMenuOpen = false; // true while a modal/menu is open
+    private Timeline pomodoroTimeline; // 1s ticking timer
+    private int remainingSeconds = 0; // in current interval
     private int totalSecondsThisInterval = 0; // for progress %
-    private boolean pomodoroActive = false;   // currently running
-    private boolean pomodoroPaused = false;   // paused by user
-    private int completedFocusInCycle = 0;    // counts focus sessions until long break
+    private boolean pomodoroActive = false; // currently running
+    private boolean pomodoroPaused = false; // paused by user
+    private int completedFocusInCycle = 0; // counts focus sessions until long break
 
     // Settings (overridden by settings modal)
     private int focusMinutes = 25;
@@ -114,7 +152,9 @@ public class GameController implements Initializable {
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_LOCAL_DATE;
     private ResourceBundle bundle;
 
-    private String tr(String key) { return bundle != null ? bundle.getString(key) : key; }
+    private String tr(String key) {
+        return bundle != null ? bundle.getString(key) : key;
+    }
 
     // End-of-interval sound
     private AudioClip finishClip;
@@ -142,15 +182,16 @@ public class GameController implements Initializable {
             this.bundle = (rb != null) ? rb : GameState.getBundle();
 
             // Load/save state & initial visuals
-            loadPetState();             // fills bars/name/type and defaults for v1.2 fields
-            rollOverDayIfNeeded();      // daily counters (streaks, mins)
+            loadPetState(); // fills bars/name/type and defaults for v1.2 fields
+            rollOverDayIfNeeded(); // daily counters (streaks, mins)
             updatePetAnimation((pet != null && pet.emotion != null) ? pet.emotion : "idle");
             setButtonImages();
 
             // Ensure pomodoro starts idle and both containers are hidden
             pomodoroActive = false;
             pomodoroPaused = false;
-            if (pomodoroTimeline != null) pomodoroTimeline.stop();
+            if (pomodoroTimeline != null)
+                pomodoroTimeline.stop();
 
             hideMenu();
             hideHud();
@@ -169,7 +210,8 @@ public class GameController implements Initializable {
 
             // Prepare end sound (optional)
             URL soundUrl = getClass().getResource("/sounds/finish.wav");
-            if (soundUrl != null) finishClip = new AudioClip(soundUrl.toExternalForm());
+            if (soundUrl != null)
+                finishClip = new AudioClip(soundUrl.toExternalForm());
 
             // Start passive decay loop (5s)
             startStatsDecrease();
@@ -188,11 +230,12 @@ public class GameController implements Initializable {
             data = new PetSaveData();
             data.petName = (GameState.getPetName() != null) ? GameState.getPetName() : "Unnamed Pet";
             data.petType = GameState.getPetType();
-            if (data.petType != null) data.petType = data.petType.toLowerCase();
+            if (data.petType != null)
+                data.petType = data.petType.toLowerCase();
 
             data.hunger = 1.0;
             data.energy = 1.0;
-            data.mood   = 1.0;
+            data.mood = 1.0;
             data.health = 1.0;
 
             // v1.2 fields
@@ -209,10 +252,14 @@ public class GameController implements Initializable {
             data.consecutivePomos = 0;
         } else {
             // Backfill v1.2 fields for older saves
-            if (data.petType != null) data.petType = data.petType.toLowerCase();
-            if (data.emotion == null) data.emotion = "idle";
-            if (data.achievements == null) data.achievements = new java.util.HashSet<>();
-            if (data.lastDayIso == null) data.lastDayIso = LocalDate.now().format(ISO);
+            if (data.petType != null)
+                data.petType = data.petType.toLowerCase();
+            if (data.emotion == null)
+                data.emotion = "idle";
+            if (data.achievements == null)
+                data.achievements = new java.util.HashSet<>();
+            if (data.lastDayIso == null)
+                data.lastDayIso = LocalDate.now().format(ISO);
         }
         this.pet = data;
 
@@ -239,7 +286,7 @@ public class GameController implements Initializable {
         // Pull the current UI values back into the save (keeps things in sync)
         pet.hunger = hungerBar.getProgress();
         pet.energy = energyBar.getProgress();
-        pet.mood   = moodBar.getProgress();
+        pet.mood = moodBar.getProgress();
         pet.health = healthBar.getProgress();
         pet.petName = GameState.getPetName();
         pet.petType = GameState.getPetType() != null ? GameState.getPetType().toLowerCase() : null;
@@ -249,7 +296,8 @@ public class GameController implements Initializable {
 
     // Called at init and every naturalTick to advance day and check dailies
     private void rollOverDayIfNeeded() {
-        if (pet == null) return;
+        if (pet == null)
+            return;
 
         String today = LocalDate.now().format(ISO);
         if (pet.lastDayIso == null) {
@@ -269,8 +317,10 @@ public class GameController implements Initializable {
             }
 
             // ACH_CARE_3D: fed 3 days in a row
-            if (pet.fedToday) pet.feedStreakDays++;
-            else              pet.feedStreakDays = 0;
+            if (pet.fedToday)
+                pet.feedStreakDays++;
+            else
+                pet.feedStreakDays = 0;
             if (pet.feedStreakDays >= 3 && !Achievements.has(pet, Achievements.Type.CARE3D.id)) {
                 Achievements.grant(pet, Achievements.Type.CARE3D.id, 15);
                 showAchievementToast("ach.care3d.title", "ach.care3d.desc", 15);
@@ -294,21 +344,25 @@ public class GameController implements Initializable {
         btnTomato.setImage(new Image(getClass().getResource("/images/ui/watch.png").toExternalForm()));
     }
 
-    // Robust sprite loader: prefers GIF, then PNG; if state missing, falls back to idle
+    // Robust sprite loader: prefers GIF, then PNG; if state missing, falls back to
+    // idle
     private void updatePetAnimation(String state) {
         String type = GameState.getPetType();
-        if (type == null || type.isBlank()) return;
+        if (type == null || type.isBlank())
+            return;
 
         String t = type.toLowerCase();
         String base = "/images/pets/" + t + "/" + t + "_" + state;
 
         URL u = getClass().getResource(base + ".gif");
-        if (u == null) u = getClass().getResource(base + ".png");
+        if (u == null)
+            u = getClass().getResource(base + ".png");
 
         if (u == null && !"idle".equals(state)) {
             String idleBase = "/images/pets/" + t + "/" + t + "_idle";
             u = getClass().getResource(idleBase + ".gif");
-            if (u == null) u = getClass().getResource(idleBase + ".png");
+            if (u == null)
+                u = getClass().getResource(idleBase + ".png");
         }
 
         if (u != null) {
@@ -363,7 +417,7 @@ public class GameController implements Initializable {
     private void changeStats(double hungerDelta, double energyDelta, double moodDelta, double healthDelta) {
         updateProgressBar(hungerBar, hungerBar.getProgress() + hungerDelta);
         updateProgressBar(energyBar, energyBar.getProgress() + energyDelta);
-        updateProgressBar(moodBar,   moodBar.getProgress()   + moodDelta);
+        updateProgressBar(moodBar, moodBar.getProgress() + moodDelta);
         updateProgressBar(healthBar, healthBar.getProgress() + healthDelta);
     }
 
@@ -377,42 +431,54 @@ public class GameController implements Initializable {
     }
 
     private void updateEmotionAndAnimation() {
-        if (pet == null || isDead) return;
+        if (pet == null || isDead)
+            return;
         // Do not override temporary action animation while it plays
-        if (isAnimationPlaying) return;
+        if (isAnimationPlaying)
+            return;
 
         double h = hungerBar.getProgress();
         double e = energyBar.getProgress();
         double m = moodBar.getProgress();
 
         String newEmo;
-        if      (m < 0.3)                 newEmo = "sad";
-        else if (e < 0.3)                 newEmo = "sleepy";
-        else if (h < 0.3)                 newEmo = "hungry";
-        else if (h > 0.6 && e > 0.5 && m > 0.6) newEmo = "happy";
-        else                               newEmo = "idle";
+        if (m < 0.3)
+            newEmo = "sad";
+        else if (e < 0.3)
+            newEmo = "sleepy";
+        else if (h < 0.3)
+            newEmo = "hungry";
+        else if (h > 0.6 && e > 0.5 && m > 0.6)
+            newEmo = "happy";
+        else
+            newEmo = "idle";
 
         if (!newEmo.equals(pet.emotion)) {
             pet.emotion = newEmo;
-            // While pomodoro is running we keep the focus sprite (HUD), so only update when idle
-            if (!pomodoroActive) updatePetAnimation(newEmo);
+            // While pomodoro is running we keep the focus sprite (HUD), so only update when
+            // idle
+            if (!pomodoroActive)
+                updatePetAnimation(newEmo);
         }
     }
 
     private void checkIfDead() {
         if (hungerBar.getProgress() <= 0 || energyBar.getProgress() <= 0
-         || moodBar.getProgress()   <= 0 || healthBar.getProgress()  <= 0) {
+                || moodBar.getProgress() <= 0 || healthBar.getProgress() <= 0) {
             handleDeath();
         }
     }
 
     private void handleDeath() {
-        if (isDead) return;
+        if (isDead)
+            return;
         isDead = true;
         isAnimationPlaying = true;
 
-        if (statsDecreaseTimeline != null) statsDecreaseTimeline.stop();
-        if (pomodoroTimeline != null) pomodoroTimeline.stop();
+        if (statsDecreaseTimeline != null)
+            statsDecreaseTimeline.stop();
+        if (pomodoroTimeline != null)
+            pomodoroTimeline.stop();
 
         updatePetAnimation("death");
         disableButtons();
@@ -456,7 +522,8 @@ public class GameController implements Initializable {
     // ===== Pet actions =====
     @FXML
     private void handleFeed() {
-        if (pomodoroActive) return;
+        if (pomodoroActive)
+            return;
 
         changeStats(+0.20, -0.02, -0.01, 0);
         if (pet != null) {
@@ -471,22 +538,26 @@ public class GameController implements Initializable {
             Achievements.grant(pet, Achievements.Type.AFF70.id, 20);
             showAchievementToast("ach.aff70.title", "ach.aff70.desc", 20);
         }
-        if (pet != null) savePetState();
+        if (pet != null)
+            savePetState();
     }
 
     @FXML
     private void handleSleep() {
-        if (pomodoroActive) return;
+        if (pomodoroActive)
+            return;
 
         changeStats(-0.03, +0.20, -0.01, 0);
-        if (pet != null) pet.xp += 3;
+        if (pet != null)
+            pet.xp += 3;
         updateEmotionAndAnimation();
         playTempAnim("sleep");
     }
 
     @FXML
     private void handlePlay() {
-        if (pomodoroActive) return;
+        if (pomodoroActive)
+            return;
 
         changeStats(-0.04, -0.03, +0.20, 0);
         if (pet != null) {
@@ -505,7 +576,8 @@ public class GameController implements Initializable {
 
     @FXML
     private void handleHeal() {
-        if (pomodoroActive) return;
+        if (pomodoroActive)
+            return;
 
         changeStats(-0.05, -0.03, -0.02, +0.10);
         updateEmotionAndAnimation();
@@ -513,7 +585,8 @@ public class GameController implements Initializable {
     }
 
     private void playTempAnim(String state) {
-        if (isDead) return;
+        if (isDead)
+            return;
 
         // Cancel any running temp animation to avoid stacking/zombie states
         if (actionAnimTimer != null) {
@@ -563,7 +636,8 @@ public class GameController implements Initializable {
     private void handleClose() {
         savePetState();
         Stage st = (Stage) background.getScene().getWindow();
-        if (st != null) st.close();
+        if (st != null)
+            st.close();
     }
 
     // ===== Hover effects for image buttons =====
@@ -586,25 +660,25 @@ public class GameController implements Initializable {
     @FXML
     private void onHoverBackLabel() {
         backLabel.setStyle(
-            "-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; -fx-font-weight: bold; -fx-padding: 3; -fx-background-radius: 5; -fx-cursor: hand;");
+                "-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; -fx-font-weight: bold; -fx-padding: 3; -fx-background-radius: 5; -fx-cursor: hand;");
     }
 
     @FXML
     private void onBackMove() {
         backLabel.setStyle(
-            "-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3; -fx-background-radius: 5; -fx-cursor: hand;");
+                "-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3; -fx-background-radius: 5; -fx-cursor: hand;");
     }
 
     @FXML
     private void onHoverClose() {
         closeLabel.setStyle(
-            "-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; -fx-font-weight: bold; -fx-padding: 3; -fx-background-radius: 5; -fx-cursor: hand;");
+                "-fx-font-size: 20px; -fx-text-fill: white; -fx-background-color: red; -fx-font-weight: bold; -fx-padding: 3; -fx-background-radius: 5; -fx-cursor: hand;");
     }
 
     @FXML
     private void onExitClose() {
         closeLabel.setStyle(
-            "-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3; -fx-background-radius: 5; -fx-cursor: hand;");
+                "-fx-font-size: 20px; -fx-text-fill: red; -fx-background-color: rgba(255,255,255,0.5); -fx-font-weight: bold; -fx-padding: 3; -fx-background-radius: 5; -fx-cursor: hand;");
     }
 
     // ===== Pomodoro: menu toggle =====
@@ -661,9 +735,11 @@ public class GameController implements Initializable {
 
     @FXML
     private void handlePomodoroPause() {
-        if (!pomodoroActive || pomodoroPaused) return;
+        if (!pomodoroActive || pomodoroPaused)
+            return;
         pomodoroPaused = true;
-        if (pomodoroTimeline != null) pomodoroTimeline.pause();
+        if (pomodoroTimeline != null)
+            pomodoroTimeline.pause();
         showMenu();
         hideHud();
         updatePomodoroButtonsState();
@@ -681,7 +757,8 @@ public class GameController implements Initializable {
         syncPomodoroUI();
 
         // Resume passive decay when no active timer and no menus
-        if (statsDecreaseTimeline != null) statsDecreaseTimeline.play();
+        if (statsDecreaseTimeline != null)
+            statsDecreaseTimeline.play();
 
         showMenu();
         hideHud();
@@ -752,12 +829,12 @@ public class GameController implements Initializable {
                 PomodoroSettings s = controller.getResult();
 
                 // === FIX: actually apply user settings ===
-    this.focusMinutes      = Math.max(1, s.getFocusMinutes());
-    this.shortBreakMinutes = Math.max(1, s.getShortBreakMinutes());
-    this.longBreakMinutes  = Math.max(1, s.getLongBreakMinutes());
-    this.cyclesBeforeLong  = Math.max(1, s.getCyclesBeforeLong());
-    this.autoStartNext     = s.isAutoStart();   // или s.autoStartNext()
-    this.soundOn           = s.isSoundOn();
+                this.focusMinutes = Math.max(1, s.getFocusMinutes());
+                this.shortBreakMinutes = Math.max(1, s.getShortBreakMinutes());
+                this.longBreakMinutes = Math.max(1, s.getLongBreakMinutes());
+                this.cyclesBeforeLong = Math.max(1, s.getCyclesBeforeLong());
+                this.autoStartNext = s.isAutoStart(); // или s.autoStartNext()
+                this.soundOn = s.isSoundOn();
 
                 // If timer is not active, reset counters to reflect new settings
                 if (!pomodoroActive) {
@@ -779,17 +856,19 @@ public class GameController implements Initializable {
     private void startMode(Mode m) {
         mode = m;
         switch (mode) {
-            case FOCUS       -> totalSecondsThisInterval = focusMinutes * 60;
+            case FOCUS -> totalSecondsThisInterval = focusMinutes * 60;
             case SHORT_BREAK -> totalSecondsThisInterval = shortBreakMinutes * 60;
-            case LONG_BREAK  -> totalSecondsThisInterval = longBreakMinutes * 60;
+            case LONG_BREAK -> totalSecondsThisInterval = longBreakMinutes * 60;
         }
         remainingSeconds = totalSecondsThisInterval;
 
         // Stop passive decay while a timer interval is running
-        if (statsDecreaseTimeline != null) statsDecreaseTimeline.stop();
+        if (statsDecreaseTimeline != null)
+            statsDecreaseTimeline.stop();
 
         // Tiny positive nudge when starting focus — feels supportive
-        if (mode == Mode.FOCUS) updateProgressBar(moodBar, moodBar.getProgress() + 0.01);
+        if (mode == Mode.FOCUS)
+            updateProgressBar(moodBar, moodBar.getProgress() + 0.01);
 
         syncPomodoroUI();
         updatePomodoroButtonsState();
@@ -799,7 +878,8 @@ public class GameController implements Initializable {
         pomodoroActive = true;
         pomodoroPaused = false;
 
-        if (pomodoroTimeline != null) pomodoroTimeline.stop();
+        if (pomodoroTimeline != null)
+            pomodoroTimeline.stop();
         pomodoroTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> onTick()));
         pomodoroTimeline.setCycleCount(Timeline.INDEFINITE);
         pomodoroTimeline.play();
@@ -808,15 +888,18 @@ public class GameController implements Initializable {
     }
 
     private void stopTicker() {
-        if (pomodoroTimeline != null) pomodoroTimeline.stop();
+        if (pomodoroTimeline != null)
+            pomodoroTimeline.stop();
     }
 
     private void onTick() {
         remainingSeconds--;
-        if (remainingSeconds < 0) remainingSeconds = 0;
+        if (remainingSeconds < 0)
+            remainingSeconds = 0;
 
         syncPomodoroUI();
-        if (remainingSeconds <= 0) onIntervalFinished();
+        if (remainingSeconds <= 0)
+            onIntervalFinished();
     }
 
     private void onIntervalFinished() {
@@ -847,11 +930,13 @@ public class GameController implements Initializable {
         if (finished == Mode.FOCUS) {
             completedFocusInCycle++;
             next = (completedFocusInCycle >= cyclesBeforeLong) ? Mode.LONG_BREAK : Mode.SHORT_BREAK;
-            if (next == Mode.LONG_BREAK) completedFocusInCycle = 0;
+            if (next == Mode.LONG_BREAK)
+                completedFocusInCycle = 0;
         } else {
             next = Mode.FOCUS;
             // Break ended: reset chain counter (only for that achievement logic)
-            if (pet != null) pet.consecutivePomos = 0;
+            if (pet != null)
+                pet.consecutivePomos = 0;
         }
 
         pomodoroCycleLabel.setText(completedFocusInCycle + "/" + cyclesBeforeLong);
@@ -866,7 +951,8 @@ public class GameController implements Initializable {
         } else {
             // Preload next mode but wait for user; resume passive decay for idle time
             startMode(next);
-            if (statsDecreaseTimeline != null) statsDecreaseTimeline.play();
+            if (statsDecreaseTimeline != null)
+                statsDecreaseTimeline.play();
             showMenu();
             hideHud();
             updatePomodoroButtonsState();
@@ -886,18 +972,32 @@ public class GameController implements Initializable {
     }
 
     // ===== Helpers: view + formatting =====
-    private void showMenu() { pomodoroMenuBox.setVisible(true);  pomodoroMenuBox.setManaged(true); }
-    private void hideMenu() { pomodoroMenuBox.setVisible(false); pomodoroMenuBox.setManaged(false); }
+    private void showMenu() {
+        pomodoroMenuBox.setVisible(true);
+        pomodoroMenuBox.setManaged(true);
+    }
 
-    private void showHud()  { pomodoroHudBox.setVisible(true);   pomodoroHudBox.setManaged(true); }
-    private void hideHud()  { pomodoroHudBox.setVisible(false);  pomodoroHudBox.setManaged(false); }
+    private void hideMenu() {
+        pomodoroMenuBox.setVisible(false);
+        pomodoroMenuBox.setManaged(false);
+    }
+
+    private void showHud() {
+        pomodoroHudBox.setVisible(true);
+        pomodoroHudBox.setManaged(true);
+    }
+
+    private void hideHud() {
+        pomodoroHudBox.setVisible(false);
+        pomodoroHudBox.setManaged(false);
+    }
 
     private void syncPomodoroUI() {
         String t = formatTime(remainingSeconds);
         String statusKey = switch (mode) {
-            case FOCUS       -> "pomodoro.status.focus";
+            case FOCUS -> "pomodoro.status.focus";
             case SHORT_BREAK -> "pomodoro.status.short";
-            case LONG_BREAK  -> "pomodoro.status.long";
+            case LONG_BREAK -> "pomodoro.status.long";
         };
         String status = tr(statusKey);
 
@@ -924,9 +1024,11 @@ public class GameController implements Initializable {
         return String.format("%02d:%02d", minutes, seconds);
     }
 
-    // Pause passive decay (UI/menu use this; unlike stop(), pause keeps internal state)
+    // Pause passive decay (UI/menu use this; unlike stop(), pause keeps internal
+    // state)
     private void pauseDecay() {
-        if (statsDecreaseTimeline != null) statsDecreaseTimeline.pause();
+        if (statsDecreaseTimeline != null)
+            statsDecreaseTimeline.pause();
     }
 
     // Resume passive decay only when timer is not running and no UI menu is open
@@ -937,26 +1039,58 @@ public class GameController implements Initializable {
     }
 
     // ===== Hover styles for Pomodoro labels (styled as buttons) =====
-    @FXML public void onHoverPomodoroStart(Event e)     { btnPomodoroStart.setStyle(btnStyle(true)); }
-    @FXML public void onHoverPomodoroPause(Event e)     { btnPomodoroPause.setStyle(btnStyle(true)); }
-    @FXML public void onHoverPomodoroReset(Event e)     { btnPomodoroReset.setStyle(btnStyle(true)); }
-    @FXML public void onHoverPomodoroSettings(Event e)  { btnPomodoroSettings.setStyle(btnStyle(true)); }
+    @FXML
+    public void onHoverPomodoroStart(Event e) {
+        btnPomodoroStart.setStyle(btnStyle(true));
+    }
 
-    @FXML public void onExitPomodoroStart(Event e)      { btnPomodoroStart.setStyle(btnStyle(false)); }
-    @FXML public void onExitPomodoroPause(Event e)      { btnPomodoroPause.setStyle(btnStyle(false)); }
-    @FXML public void onExitPomodoroReset(Event e)      { btnPomodoroReset.setStyle(btnStyle(false)); }
-    @FXML public void onExitPomodoroSettings(Event e)   { btnPomodoroSettings.setStyle(btnStyle(false)); }
+    @FXML
+    public void onHoverPomodoroPause(Event e) {
+        btnPomodoroPause.setStyle(btnStyle(true));
+    }
 
-    // Returns inline CSS for Pomodoro menu buttons. Use hover=true for highlighted state.
+    @FXML
+    public void onHoverPomodoroReset(Event e) {
+        btnPomodoroReset.setStyle(btnStyle(true));
+    }
+
+    @FXML
+    public void onHoverPomodoroSettings(Event e) {
+        btnPomodoroSettings.setStyle(btnStyle(true));
+    }
+
+    @FXML
+    public void onExitPomodoroStart(Event e) {
+        btnPomodoroStart.setStyle(btnStyle(false));
+    }
+
+    @FXML
+    public void onExitPomodoroPause(Event e) {
+        btnPomodoroPause.setStyle(btnStyle(false));
+    }
+
+    @FXML
+    public void onExitPomodoroReset(Event e) {
+        btnPomodoroReset.setStyle(btnStyle(false));
+    }
+
+    @FXML
+    public void onExitPomodoroSettings(Event e) {
+        btnPomodoroSettings.setStyle(btnStyle(false));
+    }
+
+    // Returns inline CSS for Pomodoro menu buttons. Use hover=true for highlighted
+    // state.
     private String btnStyle(boolean hover) {
         return hover
-            ? "-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(120,65,110,0.8); -fx-background-radius: 10; -fx-padding: 4 8; -fx-cursor: hand;"
-            : "-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 4 8; -fx-cursor: hand;";
+                ? "-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(120,65,110,0.8); -fx-background-radius: 10; -fx-padding: 4 8; -fx-cursor: hand;"
+                : "-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(87,46,81,0.6); -fx-background-radius: 10; -fx-padding: 4 8; -fx-cursor: hand;";
     }
 
     // ===== Achievement toast (popup near the top-right) =====
     private void showAchievementToast(String titleKey, String descKey, int rewardCoins) {
-        if (achievementShowing) return;
+        if (achievementShowing)
+            return;
         achievementShowing = true;
 
         Label title = new Label("🏆 " + tr(titleKey));
@@ -1009,7 +1143,10 @@ public class GameController implements Initializable {
         tOut.setToY(-16);
 
         fIn.setOnFinished(e -> hold.play());
-        hold.setOnFinished(e -> { fOut.play(); tOut.play(); });
+        hold.setOnFinished(e -> {
+            fOut.play();
+            tOut.play();
+        });
         fOut.setOnFinished(e -> {
             popup.hide();
             achievementShowing = false;
@@ -1020,7 +1157,15 @@ public class GameController implements Initializable {
     }
 
     // ===== Small utils =====
-    private double safe01(Double v) { return v == null ? 0.0 : clamp01(v); }
-    private double clamp01(double v){ return Math.max(0, Math.min(1.0, v)); }
-    private String safeEmotion()    { return (pet != null && pet.emotion != null) ? pet.emotion : "idle"; }
+    private double safe01(Double v) {
+        return v == null ? 0.0 : clamp01(v);
+    }
+
+    private double clamp01(double v) {
+        return Math.max(0, Math.min(1.0, v));
+    }
+
+    private String safeEmotion() {
+        return (pet != null && pet.emotion != null) ? pet.emotion : "idle";
+    }
 }

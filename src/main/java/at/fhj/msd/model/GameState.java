@@ -104,11 +104,13 @@ public final class GameState {
         }
     }
 
-public static void initDefaultsIfEmpty(PetSaveData s) {
-    if (s == null) return;
-    if (s.emotion == null) s.emotion = "idle";
-    if (s.achievements == null) s.achievements = new java.util.HashSet<>();
-}
-
+    public static void initDefaultsIfEmpty(PetSaveData s) {
+        if (s == null)
+            return;
+        if (s.emotion == null)
+            s.emotion = "idle";
+        if (s.achievements == null)
+            s.achievements = new java.util.HashSet<>();
+    }
 
 }

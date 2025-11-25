@@ -6,13 +6,19 @@
 
   <groupId>alena.stone</groupId>
   <artifactId>Tamogotchi</artifactId>
-  <version>1.1</version>
+  <version>2.0</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <javafx.version>22.0.1</javafx.version>
+
+    <!-- Компилируем под Java 17 (совместимо и с рантаймом JDK 21) -->
+    <maven.compiler.release>17</maven.compiler.release>
+
+    <!-- JavaFX 21.x + путь к JMOD'ам (для jlink/jpackage) -->
+    <javafx.version>21.0.7</javafx.version>
+    <javafx.jmods>C:/javafx-sdk-21/javafx-sdk-21.0.7/jmods</javafx.jmods>
+
+    <!-- Главный класс приложения -->
     <main.class>at.fhj.msd.App</main.class>
   </properties>
 
@@ -60,18 +66,17 @@
     </resources>
 
     <plugins>
-      <!-- Java compiler -->
+      <!-- Компиляция -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
+        <version>3.13.0</version>
         <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
+          <release>${maven.compiler.release}</release>
         </configuration>
       </plugin>
 
-      <!-- Run JavaFX app during development -->
+      <!-- Запуск во время разработки (опционально) -->
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
@@ -81,7 +86,7 @@
         </configuration>
       </plugin>
 
-      <!-- Shade: produce a separate *-shaded.jar with all dependencies (exclude JavaFX) -->
+      <!-- Жирный JAR без JavaFX (JavaFX добавит jpackage через jlink) -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -89,16 +94,13 @@
         <executions>
           <execution>
             <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
+            <goals><goal>shade</goal></goals>
             <configuration>
               <createDependencyReducedPom>false</createDependencyReducedPom>
               <shadedArtifactAttached>true</shadedArtifactAttached>
               <shadedClassifierName>shaded</shadedClassifierName>
               <artifactSet>
                 <excludes>
-                  <!-- JavaFX modules are provided by the runtime image -->
                   <exclude>org.openjfx:*</exclude>
                 </excludes>
               </artifactSet>
@@ -112,7 +114,7 @@
         </executions>
       </plugin>
 
-      <!-- JPackage: build a Windows installer from the *-shaded.jar -->
+      <!-- Инсталлятор/апп-имидж -->
       <plugin>
         <groupId>org.panteleyev</groupId>
         <artifactId>jpackage-maven-plugin</artifactId>
@@ -121,37 +123,31 @@
           <execution>
             <id>make-installer</id>
             <phase>package</phase>
-            <goals>
-              <goal>jpackage</goal>
-            </goals>
+            <goals><goal>jpackage</goal></goals>
           </execution>
         </executions>
         <configuration>
-          <!-- App metadata -->
           <name>Tamogotchi</name>
-          <appVersion>1.0</appVersion>
+          <appVersion>2.0</appVersion>
           <mainClass>${main.class}</mainClass>
 
-          <!-- Inputs/outputs -->
           <input>${project.build.directory}</input>
           <mainJar>${project.artifactId}-${project.version}-shaded.jar</mainJar>
-          <runtimeImage>C:/javafx-runtime</runtimeImage>
           <destination>${project.basedir}/dist</destination>
           <icon>src/main/resources/images/icon.ico</icon>
 
-          <!-- Temporary: show console to see runtime errors; set to false for release -->
           <winConsole>false</winConsole>
-
-          <!-- Windows options -->
           <winMenu>true</winMenu>
           <winShortcut>true</winShortcut>
           <winDirChooser>true</winDirChooser>
 
-          <!-- Optional JVM args for JavaFX diagnostics; remove later if not needed -->
-          <jvmArgs>
-            <jvmArg>-Dprism.verbose=true</jvmArg>
-            <jvmArg>-Djavafx.verbose=true</jvmArg>
-          </jvmArgs>
+          <!-- Модули JavaFX в рантайм -->
+          <addModules>javafx.controls,javafx.fxml,javafx.media</addModules>
+
+          <!-- Пути к JMOD-пакетам (тут лежит javafx.controls.jmod и т.д.) -->
+          <modulePaths>
+            <modulePath>${javafx.jmods}</modulePath>
+          </modulePaths>
         </configuration>
       </plugin>
     </plugins>

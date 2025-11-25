@@ -23,13 +23,13 @@ import javafx.stage.Stage;
 public class AchievementsController {
 
     @FXML
-    private StackPane root;        // Root node of the modal (fx:id="root")
+    private StackPane root; // Root node of the modal (fx:id="root")
     @FXML
-    private VBox grid;             // Container for achievement cards
+    private VBox grid; // Container for achievement cards
     @FXML
-    private Label countLabel;      // "unlocked/total"
+    private Label countLabel; // "unlocked/total"
     @FXML
-    private Label coinsLabel;      // Shows current coins
+    private Label coinsLabel; // Shows current coins
     @FXML
     private ResourceBundle resources; // i18n bundle injected via FXMLLoader
 
@@ -63,14 +63,16 @@ public class AchievementsController {
         Platform.runLater(() -> {
             if (root.getScene() != null) {
                 root.getScene().setOnKeyPressed(e -> {
-                    if (e.getCode() == KeyCode.ESCAPE) onClose();
+                    if (e.getCode() == KeyCode.ESCAPE)
+                        onClose();
                 });
             }
             root.requestFocus();
         });
 
         // ——— Data population ———
-        if (grid != null) grid.getChildren().clear();
+        if (grid != null)
+            grid.getChildren().clear();
 
         PetSaveData loaded = SaveManager.load();
         final PetSaveData data = (loaded != null) ? loaded : new PetSaveData();
@@ -95,8 +97,10 @@ public class AchievementsController {
         int unlockedCount = 0;
         for (Achievements.Type t : types) {
             boolean unlocked = Achievements.has(data, t.id);
-            if (unlocked) unlockedCount++;
-            if (grid != null) grid.getChildren().add(makeCard(t, unlocked));
+            if (unlocked)
+                unlockedCount++;
+            if (grid != null)
+                grid.getChildren().add(makeCard(t, unlocked));
         }
 
         // "X/Y" counter
@@ -137,12 +141,15 @@ public class AchievementsController {
         return box;
     }
 
-    /** Loads an icon by classpath; returns a 1×1 transparent placeholder if missing. */
+    /**
+     * Loads an icon by classpath; returns a 1×1 transparent placeholder if missing.
+     */
     private Image loadIcon(String classpath) {
         var url = getClass().getResource(classpath);
         if (url == null) {
             System.err.println("Missing icon resource: " + classpath);
-            // Use a transparent 1×1 image as a safe fallback (data: URLs are not guaranteed)
+            // Use a transparent 1×1 image as a safe fallback (data: URLs are not
+            // guaranteed)
             return new WritableImage(1, 1);
         }
         return new Image(url.toExternalForm());

@@ -2,7 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-
+<?import java.net.*?>
 <!--
   Achievements modal:
   - Frameless card with drop shadow (styled via CSS classes).
